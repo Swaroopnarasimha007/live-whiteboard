@@ -1,0 +1,5 @@
+# Starter settings. API_KEY and optional MODE go in ai_whiteboard/.env.
+# Change model only for a real provider; mock keeps its built-in fixture.
+mode: groq
+model: openai/gpt-oss-120b
+speech_profile: whisper-small

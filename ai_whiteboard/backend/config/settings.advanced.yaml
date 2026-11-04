@@ -1,4 +1,4 @@
-# Advanced settings. MODE and API_KEY in V1/.env override provider selection.
+# Optional tuning and provider profiles. Most users can leave this file unchanged.
 server:
   host: 127.0.0.1
   port: 8000
@@ -8,7 +8,6 @@ server:
   workers: 1
   max_request_bytes: 524288
 transcription:
-  default_profile: mock
   allow_client_profile_selection: true
   enabled_profiles:
   - whisper-small
@@ -45,10 +44,7 @@ transcription:
     max_loaded_models: 2
     max_active_recognizers: 2
 diagram:
-  active_profile: mock
   allow_client_profile_selection: false
-  enabled_profiles:
-  - mock
   profiles:
     mock:
       provider: mock

@@ -1,11 +1,11 @@
-name: V1 checks
+name: AI Whiteboard checks
 on: [push, pull_request]
 jobs:
   backend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: V1/backend
+        working-directory: ai_whiteboard/backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,14 +19,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: V1/frontend
+        working-directory: ai_whiteboard/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: V1/frontend/.nvmrc
+          node-version-file: ai_whiteboard/frontend/.nvmrc
           cache: npm
-          cache-dependency-path: V1/frontend/package-lock.json
+          cache-dependency-path: ai_whiteboard/frontend/package-lock.json
       - run: npm ci
       - run: npm run lint
       - run: npm test
@@ -36,11 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: V1
+        working-directory: ai_whiteboard
     steps:
       - uses: actions/checkout@v4
       - run: docker compose config --quiet
-      - run: docker compose up --build --wait --wait-timeout 300
+      - run: docker compose up --build --wait --wait-timeout 900
       - run: curl --fail http://localhost:5173/health/ready
       - run: docker compose logs
         if: always()

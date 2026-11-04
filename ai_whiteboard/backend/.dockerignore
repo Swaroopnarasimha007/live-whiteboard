@@ -7,7 +7,7 @@ __pycache__
 .ruff_cache
 .env
 .env.*
-models
+/models
 tests
 docs
 dist

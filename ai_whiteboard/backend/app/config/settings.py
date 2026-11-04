@@ -280,6 +280,56 @@ def environment() -> dict[str, str]:
     return {**{key: value for key, value in values.items() if value is not None}, **os.environ}
 
 
+def select_mode(data: dict, mode: str) -> str:
+    if not isinstance(mode, str):
+        raise TypeError("Mode must be a string")
+    mode = mode.strip().lower()
+    mode = {"anthropic": "claude"}.get(mode, mode)
+    profile = "mock" if mode == "mock" else f"{mode}-default"
+    if profile not in data["diagram"]["profiles"]:
+        raise ValueError("Unknown mode")
+    data["diagram"]["active_profile"] = profile
+    data["diagram"]["enabled_profiles"] = [profile]
+    return profile
+
+
+def read_config(path: Path) -> dict:
+    loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
+        raise TypeError("Expected YAML mapping")
+    return loaded
+
+
+def apply_config(data: dict, path: Path) -> None:
+    # Only a fixed sibling path is loaded; configuration cannot include arbitrary files.
+    advanced = path.with_name("settings.advanced.yaml")
+    if advanced != path and advanced.is_file():
+        merge(data, read_config(advanced))
+    loaded = read_config(path)
+    starter_keys = {"mode", "model", "speech_profile"}
+    if not starter_keys.intersection(loaded):
+        merge(data, loaded)  # Existing full-format YAML remains supported.
+        return
+    if set(loaded) - starter_keys:
+        raise ValueError("Move advanced options to settings.advanced.yaml")
+    if "mode" in loaded:
+        select_mode(data, loaded["mode"])
+    if "model" in loaded:
+        model = loaded["model"]
+        if not isinstance(model, str) or not model.strip():
+            raise ValueError("Model must be a nonempty string")
+        profile = data["diagram"]["profiles"][data["diagram"]["active_profile"]]
+        if profile["provider"] != "mock":
+            profile["model"] = model
+    if "speech_profile" in loaded:
+        speech = loaded["speech_profile"]
+        if not isinstance(speech, str) or speech not in data["transcription"]["profiles"]:
+            raise ValueError("Unknown speech profile")
+        data["transcription"]["default_profile"] = speech
+        if speech not in data["transcription"]["enabled_profiles"]:
+            data["transcription"]["enabled_profiles"].append(speech)
+
+
 def load_settings(
     path: str | Path | None = None, *, environ: dict[str, str] | None = None
 ) -> Settings:
@@ -293,10 +343,7 @@ def load_settings(
             config_path = Path(selected)
             if not config_path.is_absolute():
                 config_path = BACKEND_DIR / config_path
-            loaded = yaml.safe_load(config_path.read_text(encoding="utf-8"))
-            if not isinstance(loaded, dict):
-                raise ValueError("Expected YAML mapping")
-            merge(data, loaded)
+            apply_config(data, config_path)
         for name, value in env.items():
             if name.startswith("WHITEBOARD__"):
                 keys = name.removeprefix("WHITEBOARD__").lower().split("__")
@@ -310,12 +357,7 @@ def load_settings(
                 target[keys[-1]] = yaml.safe_load(value)
         mode = env.get("MODE", "").strip().lower()
         if mode:
-            mode = {"anthropic": "claude"}.get(mode, mode)
-            profile = "mock" if mode == "mock" else f"{mode}-default"
-            if profile not in data["diagram"]["profiles"]:
-                raise ValueError("Unknown MODE")
-            data["diagram"]["active_profile"] = profile
-            data["diagram"]["enabled_profiles"] = [profile]
+            profile = select_mode(data, mode)
             if mode != "mock" and env.get("API_KEY", "").strip():
                 data["diagram"]["profiles"][profile]["api_key_env"] = "API_KEY"
         elif env.get("API_KEY", "").strip():
@@ -323,8 +365,9 @@ def load_settings(
             if data["diagram"]["profiles"][profile]["provider"] != "mock":
                 data["diagram"]["profiles"][profile]["api_key_env"] = "API_KEY"
         return Settings.model_validate(data)
-    except (OSError, ValueError, yaml.YAMLError, ValidationError):
+    except (OSError, TypeError, ValueError, yaml.YAMLError, ValidationError):
         # Do not include raw YAML, environment values, model paths or validation inputs.
         raise ConfigurationError(
-            "Invalid backend configuration; check keys, types, profiles and limits."
+            "Invalid backend configuration; check settings.yaml, settings.advanced.yaml, "
+            "keys, types, profiles and limits."
         ) from None

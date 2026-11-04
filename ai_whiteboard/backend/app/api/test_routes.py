@@ -24,7 +24,7 @@ def generation(session, request_id="r1"):
 
 
 def test_session_stream_replay_conflict_reset_and_expiry():
-    app = create_app()
+    app = create_app(Settings())
     with TestClient(app) as client:
         created = client.post("/api/v1/sessions", json={})
         assert created.status_code == 201

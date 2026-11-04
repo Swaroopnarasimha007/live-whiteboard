@@ -1,7 +1,21 @@
-name: live-whiteboard-v1
+name: ai-whiteboard
 services:
+  model-init:
+    build: ./backend
+    image: ai-whiteboard-backend:local
+    command: ["python", "-m", "scripts.models.ensure"]
+    environment:
+      MODE: ${MODE:-}
+    volumes:
+      - ./backend/config:/app/backend/config:ro
+      - whisper-models:/app/backend/models
+    restart: "no"
   backend:
     build: ./backend
+    image: ai-whiteboard-backend:local
+    depends_on:
+      model-init:
+        condition: service_completed_successfully
     environment:
       MODE: ${MODE:-}
       API_KEY: ${API_KEY:-}

@@ -14,7 +14,7 @@ build/
 *.egg-info/
 test-results/
 playwright-report/
-V1/backend/models/
+ai_whiteboard/backend/models/
 *.log
 .DS_Store
 Thumbs.db

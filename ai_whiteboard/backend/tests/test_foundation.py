@@ -41,10 +41,10 @@ def test_precedence_and_example(tmp_path):
     path.write_text("server:\n  port: 8001\n", encoding="utf-8")
     config = load_settings(path, environ={"WHITEBOARD__SERVER__PORT": "8002"})
     assert config.server.port == 8002
-    example = load_settings("config/settings.example.yaml", environ={})
+    example = load_settings("config/settings.yaml", environ={})
     assert len(example.diagram.profiles) == 6
     assert example.diagram.active_profile in example.diagram.enabled_profiles
-    assert example.transcription.default_profile == "mock"
+    assert example.transcription.default_profile == "whisper-small"
 
 
 @pytest.mark.parametrize(
@@ -100,7 +100,7 @@ def test_lifecycle_routes_cors_and_validation():
 
         stack.push_async_callback(cleanup)
 
-    app = create_app(configure=configure)
+    app = create_app(Settings(), configure=configure)
     with TestClient(app) as client:
         assert client.get("/health/live").status_code == 200
         assert client.get("/health/ready").json()["stage"] == "B3"
@@ -168,6 +168,8 @@ def test_real_cli_startup_and_shutdown():
         port = listener.getsockname()[1]
     env = {key: value for key, value in os.environ.items() if not key.startswith("WHITEBOARD")}
     env["WHITEBOARD__SERVER__PORT"] = str(port)
+    env["MODE"] = "mock"
+    env["WHITEBOARD__TRANSCRIPTION__DEFAULT_PROFILE"] = "mock"
     process = subprocess.Popen(
         [sys.executable, "-m", "app"],
         cwd=BACKEND_DIR,

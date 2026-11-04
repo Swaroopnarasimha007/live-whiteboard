@@ -1,16 +1,16 @@
 :root {
-  --neu-control-edge: #ffffff60;
-  --neu-control-hover: #ffffff90;
-  --neu-base: #e8e8e8;
-  --neu-blue: #c8e0f4;
-  --neu-pink: #f5e0e8;
+  --neu-control-edge: #dfe4ef;
+  --neu-control-hover: #b9b3e4;
+  --neu-base: #ffffff;
+  --neu-blue: #efedff;
+  --neu-pink: #f1edff;
   --neu-light: #ffffff;
-  --neu-dark: #d0d0d0;
-  --neu-accent: #7b68ee;
-  --neu-heading: #3f3f46;
-  --neu-text: #52525b;
-  --neu-raised: -5px -5px 14px var(--neu-light), 5px 5px 14px var(--neu-dark);
-  --neu-inset: inset -3px -3px 8px var(--neu-light), inset 3px 3px 8px var(--neu-dark);
+  --neu-dark: #e3e7f2;
+  --neu-accent: #5b4bc4;
+  --neu-heading: #24304a;
+  --neu-text: #58657c;
+  --neu-raised: 0 2px 4px #24304a04, 0 8px 24px #24304a06;
+  --neu-inset: inset 0 1px 3px #24304a08;
   font-family: var(--ui-font, Arial, sans-serif);
   color: var(--ui-text, #172033);
   background: var(--ui-background, #f4f6f8);
@@ -51,9 +51,11 @@ button {
   font-weight: 600;
   box-shadow: var(--neu-raised);
   transition:
-    box-shadow 150ms ease,
-    background-color 150ms ease,
-    color 150ms ease;
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
   font-size: 13px;
   line-height: 1.25;
 }
@@ -63,7 +65,8 @@ button svg {
 }
 button:hover:enabled {
   border-color: var(--neu-control-hover);
-  background: var(--neu-base);
+  background: var(--ui-accentSoft);
+  box-shadow: 0 3px 10px #24304a0d;
 }
 button:active:enabled,
 button[aria-pressed='true'] {
@@ -80,17 +83,18 @@ button:disabled {
   box-shadow: none;
 }
 button.primary {
-  color: var(--neu-heading);
-  background: var(--neu-base);
-  border-color: var(--neu-control-hover);
+  color: #ffffff;
+  background: #5b4bc4;
+  border-color: #5b4bc4;
+  box-shadow: 0 3px 10px #5b4bc425;
   min-height: 42px;
   padding-inline: 18px;
 }
 button.primary:hover:enabled {
-  color: var(--ui-accent);
-  box-shadow:
-    -7px -7px 18px var(--neu-light),
-    7px 7px 18px var(--neu-dark);
+  color: #ffffff;
+  background: #4e3eae;
+  border-color: #4e3eae;
+  box-shadow: 0 4px 14px #5b4bc435;
 }
 button.primary:active:enabled {
   box-shadow: var(--neu-inset);
@@ -121,6 +125,9 @@ textarea {
   max-width: 100%;
   box-shadow: var(--neu-inset);
   font-size: 13px;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
 }
 input[type='checkbox'] {
   width: 16px;
@@ -200,25 +207,26 @@ p {
   white-space: nowrap;
 }
 .brand-mark {
-  color: var(--neu-heading);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: var(--neu-blue);
-  box-shadow: var(--neu-raised);
+  background: linear-gradient(140deg, #7c6bdd, #5141b0);
+  box-shadow: 0 3px 10px #5b4bc425;
 }
 .brand h1 {
   font-size: 16px;
-  letter-spacing: -0.35px;
+  letter-spacing: -0.5px;
+  font-weight: 700;
   margin: 0;
 }
 .session-name {
   width: 160px;
   border-color: transparent;
-  background: var(--neu-base);
+  background: var(--ui-background);
   text-overflow: ellipsis;
 }
 .session-name:hover {
@@ -246,7 +254,7 @@ p {
   display: flex;
   gap: 8px;
   align-items: center;
-  min-height: 32px;
+  min-height: 36px;
   padding: 4px 16px;
   color: var(--ui-muted);
   font-size: 12px;
@@ -266,6 +274,7 @@ p {
 .capture-indicator.is-recording {
   background: var(--ui-accent);
   border-color: var(--ui-accent);
+  box-shadow: 0 0 0 3px var(--ui-accentSoft);
 }
 .attention-dot {
   width: 8px;
@@ -277,8 +286,8 @@ p {
   position: relative;
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
-  gap: 8px;
-  padding: 0 8px 8px;
+  gap: 12px;
+  padding: 0 12px 12px;
   min-height: 0;
   min-width: 0;
 }
@@ -292,7 +301,7 @@ p {
   overflow-x: hidden;
   overscroll-behavior: contain;
   border: 1px solid var(--ui-border);
-  border-radius: 20px;
+  border-radius: 18px;
   background: var(--neu-base);
   box-shadow: var(--neu-raised);
   scrollbar-width: thin;
@@ -337,8 +346,8 @@ p {
   overflow: hidden;
   background: var(--ui-canvas);
   border: 1px solid var(--ui-border);
-  border-radius: 24px;
-  box-shadow: var(--neu-inset);
+  border-radius: 20px;
+  box-shadow: 0 1px 3px #24304a04;
 }
 .board-empty {
   position: absolute;
@@ -354,19 +363,19 @@ p {
   max-width: 400px;
 }
 .empty-content > svg {
-  color: var(--neu-heading);
+  color: var(--ui-accent);
   width: 64px;
   height: 64px;
   padding: 18px;
   border-radius: 20px;
-  background: var(--neu-pink);
-  box-shadow: var(--neu-raised);
+  background: var(--ui-accentSoft);
+  box-shadow: 0 0 0 8px var(--ui-background);
   margin-bottom: 24px;
 }
 .empty-content h2 {
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.4px;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.85px;
   margin-bottom: 8px;
 }
 .empty-content p {
@@ -397,6 +406,8 @@ p {
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ui-border);
 }
 .panel-heading h2 {
   margin: 0;
@@ -415,6 +426,7 @@ p {
 .board-panel section h2 {
   font-size: 13px;
   margin-bottom: 8px;
+  letter-spacing: 0.02em;
 }
 .board-panel p {
   margin: 0 0 8px;
@@ -474,6 +486,9 @@ p {
   width: 100%;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
+  gap: 4px;
+  border-radius: 10px;
+  box-shadow: none;
 }
 .scene-outline small {
   font-size: 11px;
@@ -531,6 +546,7 @@ p {
   border-top: 1px solid var(--ui-border);
   background: var(--neu-base);
   font-size: 12px;
+  box-shadow: 0 -2px 12px #24304a03;
 }
 .toggle-label {
   display: inline-flex;
@@ -544,9 +560,16 @@ p {
   gap: 4px;
   flex-wrap: nowrap;
   margin-left: 8px;
+  padding: 3px;
+  border: 1px solid var(--ui-border);
+  border-radius: 13px;
+  background: var(--ui-background);
 }
 .zoom-controls button {
   padding: 8px;
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
 }
 .zoom-controls button:nth-child(2) {
   min-width: 60px;
@@ -784,18 +807,18 @@ p {
 
 .whiteboard-app[data-theme='dark'] {
   color-scheme: dark;
-  --neu-base: #26282e;
-  --neu-blue: #344959;
-  --neu-pink: #513c49;
-  --neu-light: #34373f;
-  --neu-dark: #191b20;
-  --neu-accent: #b6a8ff;
-  --neu-heading: #ececf2;
-  --neu-text: #b9bdc9;
-  --neu-control-edge: #ffffff0d;
-  --neu-control-hover: #ffffff26;
-  --neu-raised: -5px -5px 14px var(--neu-light), 5px 5px 14px var(--neu-dark);
-  --neu-inset: inset -3px -3px 8px var(--neu-light), inset 3px 3px 8px var(--neu-dark);
+  --neu-base: #1b2434;
+  --neu-blue: #302d50;
+  --neu-pink: #302d50;
+  --neu-light: #26334a;
+  --neu-dark: #0d121c;
+  --neu-accent: #b8adff;
+  --neu-heading: #ecf0fa;
+  --neu-text: #adb9cd;
+  --neu-control-edge: #35435a;
+  --neu-control-hover: #706799;
+  --neu-raised: 0 2px 4px #0000000a, 0 8px 24px #00000012;
+  --neu-inset: inset 0 1px 3px #0000001a;
 }
 .whiteboard-app[data-theme='light'] {
   color-scheme: light;
@@ -808,6 +831,69 @@ p {
 }
 .topbar-utilities > button {
   padding-inline: 8px;
+}
+.navigation-toggle {
+  min-width: 114px;
+  box-shadow: none;
+}
+.tool-rail button:hover:enabled svg,
+.topbar-utilities button:hover:enabled svg {
+  transform: translateY(-1px);
+}
+.tool-rail button svg,
+.topbar-utilities button svg {
+  transition: transform 140ms ease;
+}
+/* Short, parallel entrances: controls never wait for a staggered sequence. */
+@keyframes ui-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes ui-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.app-topbar,
+.tool-rail,
+.board-panel,
+.empty-content,
+.board-notice,
+.editor-properties,
+.editor-label-overlay,
+.section-buttons > button,
+.scene-outline li,
+.transcript-list > li,
+.board-panel details[open] > :not(summary),
+.pan-menu[open] > div {
+  animation: ui-enter 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.board-region,
+.statusbar,
+.viewport-bar,
+.drawer-scrim {
+  animation: ui-fade 160ms ease-out;
+}
+.editor-label-overlay {
+  border-radius: 12px;
+}
+@media (max-width: 540px) {
+  .navigation-toggle {
+    min-width: 36px;
+    padding-inline: 8px;
+  }
+  .navigation-toggle span {
+    display: none;
+  }
 }
 @media (min-width: 1001px) and (max-width: 1350px) {
   .app-topbar {

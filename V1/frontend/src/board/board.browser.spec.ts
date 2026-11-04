@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import type Konva from 'konva';
 
 const board = (page: Page) => page.getByRole('application', { name: 'Whiteboard canvas' });
 const pageErrors = new WeakMap<Page, string[]>();
@@ -55,7 +56,7 @@ test('renders all shapes in three layers; toggles grid without touching scene or
   expect(errors).toEqual([]);
 });
 
-test('wheel pans both axes, pointer zoom is anchored, and Space/hand/middle drags pan', async ({
+test('wheel zooms in both directions, Shift pans, and Space/hand/middle drags still pan', async ({
   page,
 }) => {
   await load(page);
@@ -79,9 +80,20 @@ test('wheel pans both axes, pointer zoom is anchored, and Space/hand/middle drag
     x: number;
     y: number;
   };
-  await expect.poll(async () => (await camera(page)).y).toBe(before.y - actualWheel.y);
-  expect((await camera(page)).x).toBe(before.x - actualWheel.x);
+  await expect.poll(async () => (await camera(page)).scale).toBeLessThan(before.scale);
+  expect((await camera(page)).scale).toBeCloseTo(before.scale * Math.exp(-actualWheel.y * 0.002));
   await expect(board(page)).toHaveAttribute('data-follow-live', 'false');
+  const zoomedOut = await camera(page);
+  await board(page).dispatchEvent('wheel', {
+    deltaX: 30,
+    deltaY: 60,
+    shiftKey: true,
+    clientX: point.x,
+    clientY: point.y,
+  });
+  await expect.poll(async () => (await camera(page)).y).toBe(zoomedOut.y - 60);
+  expect((await camera(page)).x).toBe(zoomedOut.x - 30);
+  expect((await camera(page)).scale).toBe(zoomedOut.scale);
   const pan = await camera(page);
   await board(page).evaluate((host) =>
     host.addEventListener(
@@ -96,9 +108,7 @@ test('wheel pans both axes, pointer zoom is anchored, and Space/hand/middle drag
       { once: true, capture: true },
     ),
   );
-  await page.keyboard.down('Control');
   await page.mouse.wheel(0, -120);
-  await page.keyboard.up('Control');
   await expect.poll(async () => (await camera(page)).scale).toBeGreaterThan(pan.scale);
   const actualPointer = JSON.parse((await board(page).getAttribute('data-test-zoom-pointer'))!) as {
     x: number;
@@ -136,6 +146,124 @@ test('wheel pans both axes, pointer zoom is anchored, and Space/hand/middle drag
   expect((await camera(page)).x).toBeCloseTo(middle.x + 25);
   await expect(board(page)).toHaveAttribute('data-scene-revision', '1');
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
+test('new canvas objects fade quickly without changing geometry or hit testing, and do not replay after culling', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const samples = await page.evaluate(async () => {
+    const harness = await import(/* @vite-ignore */ '/src/board/' + 'browserHarness.ts');
+    harness.startHarness(2, false);
+    const h = harness.activeHarness;
+    const opacity: number[] = [];
+    let hitWhileFading = false;
+    await new Promise<void>((resolve) => {
+      const sample = () => {
+        const node = h.handle.current?.getNodeRef('g_n0');
+        if (node) {
+          opacity.push(node.opacity());
+          const hit = h.handle.current!.getStage()!.getIntersection({ x: 60, y: 32 });
+          if (node.opacity() < 1 && hit?.findAncestor('.board-node')?.id() === 'g_n0')
+            hitWhileFading = true;
+        }
+        if (opacity.length < 20) requestAnimationFrame(sample);
+        else resolve();
+      };
+      requestAnimationFrame(sample);
+    });
+    const node = h.handle.current!.getNodeRef('g_n0')!;
+    return {
+      opacity,
+      hitWhileFading,
+      x: node.x(),
+      y: node.y(),
+      scaleX: node.scaleX(),
+      scaleY: node.scaleY(),
+      revision: h.scene.revision,
+    };
+  });
+  expect(samples.opacity.some((value) => value < 1)).toBe(true);
+  expect(samples.opacity.at(-1)).toBe(1);
+  expect(samples.hitWhileFading).toBe(true);
+  expect(samples).toMatchObject({ x: 0, y: 0, scaleX: 1, scaleY: 1, revision: 1 });
+  await page.evaluate(async () => {
+    const { activeHarness: h } = await import(
+      /* @vite-ignore */ '/src/board/' + 'browserHarness.ts'
+    );
+    h.controller.setViewport({ x: -10000, y: -10000, scale: 1 });
+  });
+  const host = page.getByRole('application', { name: 'Harness board' });
+  await expect(host).toHaveAttribute('data-visible-nodes', '0');
+  const restoredOpacity = await page.evaluate(async () => {
+    const { activeHarness: h } = await import(
+      /* @vite-ignore */ '/src/board/' + 'browserHarness.ts'
+    );
+    h.controller.setViewport({ x: 0, y: 0, scale: 1 });
+    return new Promise<number>((resolve) => {
+      const sample = () => {
+        const node = h.handle.current?.getNodeRef('g_n0');
+        if (node) resolve(node.opacity());
+        else requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    });
+  });
+  expect(restoredOpacity).toBe(1);
+});
+
+test('large imports bound concurrent fades and reduced motion skips them', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const large = await page.evaluate(async () => {
+    const harness = await import(/* @vite-ignore */ '/src/board/' + 'browserHarness.ts');
+    harness.startHarness(1000, false);
+    const h = harness.activeHarness;
+    h.controller.setViewport({ x: 0, y: 0, scale: 0.3 });
+    return new Promise<{ visible: number; fading: number }>((resolve) => {
+      const sample = () => {
+        const nodes = h.handle.current?.getStage()?.find('.board-node');
+        if (nodes?.length)
+          resolve({
+            visible: nodes.length,
+            fading: nodes.filter((node: Konva.Node) => node.opacity() < 1).length,
+          });
+        else requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    });
+  });
+  expect(large.visible).toBeGreaterThan(48);
+  expect(large.fading).toBeGreaterThan(0);
+  expect(large.fading).toBeLessThanOrEqual(48);
+  // Toggling the OS preference also finishes animations already in flight.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        const { activeHarness: h } = await import(
+          /* @vite-ignore */ '/src/board/' + 'browserHarness.ts'
+        );
+        return h.handle
+          .current!.getStage()!
+          .find('.board-node')
+          .filter((node: Konva.Node) => node.opacity() !== 1).length;
+      }),
+    )
+    .toBe(0);
+  const reducedOpacity = await page.evaluate(async () => {
+    const harness = await import(/* @vite-ignore */ '/src/board/' + 'browserHarness.ts');
+    harness.stopHarness();
+    harness.startHarness(2, false);
+    return new Promise<number>((resolve) => {
+      const sample = () => {
+        const node = harness.activeHarness.handle.current?.getNodeRef('g_n0');
+        if (node) resolve(node.opacity());
+        else requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    });
+  });
+  expect(reducedOpacity).toBe(1);
 });
 
 test('follow tracks latest generated section while manual browsing remains independent', async ({

@@ -1,5 +1,34 @@
 import { expect, test, type Page } from '@playwright/test';
 const board = (page: Page) => page.getByRole('application', { name: 'Whiteboard canvas' });
+
+test('pan toggle stays in sync with the existing hand/select tools and preserves the scene', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const toggle = page.getByRole('button', { name: 'Pan mode', exact: true });
+  await page.getByRole('button', { name: 'Add rectangle', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  const revision = await board(page).getAttribute('data-scene-revision');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await expect(board(page)).toHaveCSS('cursor', 'grab');
+  await expect(page.getByRole('button', { name: 'Hand', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByRole('button', { name: 'Select', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await board(page).focus();
+  await page.keyboard.press('h');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('v');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await expect(board(page)).toHaveAttribute('data-scene-revision', revision!);
+});
 async function fixture(page: Page) {
   await page.getByText('Developer tools', { exact: true }).click();
   await page.getByRole('button', { name: 'Load renderer fixture' }).click();

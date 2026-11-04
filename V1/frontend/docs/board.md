@@ -53,7 +53,7 @@ Camera animations replace the previous target and retain at most one scheduled f
 
 ## Input behavior
 
-Wheel uses both axes and normalizes pixel/line/page delta modes. Ctrl/Cmd+wheel zooms around the actual pointer and prevents browser page zoom only within the board. Space+primary drag, middle-button drag and hand-tool primary drag pan. Space is intercepted only while the canvas is focused and no input/textarea/select/contenteditable target is active. Sidebar/other controls retain normal scroll and typing behavior.
+Wheel-up zooms in and wheel-down zooms out around the actual pointer, normalizing pixel/line/page delta modes. Ctrl/Cmd+wheel also zooms. Shift+wheel pans both axes; horizontal-only wheel input pans horizontally. Browser page zoom is prevented only within the board. Space+primary drag, middle-button drag and hand-tool primary drag pan. Space is intercepted only while the canvas is focused and no input/textarea/select/contenteditable target is active. Sidebar/other controls retain normal scroll and typing behavior.
 
 Two-finger touch pans and pinches about the gesture midpoint using an absolute gesture baseline. This prevents scale drift when per-finger pointer events briefly hit a zoom clamp. Ending one finger does not unexpectedly turn the remaining finger into an editor drag. Pointer capture, focus loss, window blur, cancellation and unmount release navigation state. Native capture listeners arbitrate camera gestures before Konva/editor callbacks.
 
@@ -88,3 +88,15 @@ Agent 4 now composes this interface in EditorSurface; see [editor integration](e
 ## Remaining work
 
 Agents 5–6 provide stream/session inputs. Agent 7 owns full product UI/accessibility and shared themes. Firefox/WebKit, paint latency/FPS and all twelve complete streamed journeys remain unverified; the 5,000-node culling smoke does not establish a performance target.
+
+## V2 presentation
+
+Light and dark surfaces use the same shared DOM/canvas palette. Panels and controls
+enter in parallel in 160 ms. New sections, edges and nodes fade in over 160 ms
+without changing scene geometry, hit testing, editing or generation scheduling.
+The canvas limits concurrent fades to 48; existing objects do not replay an entrance
+when they return from viewport culling. Reduced-motion preferences skip animation,
+including when enabled while an object is appearing.
+
+The Pan mode button in the footer toggles the existing hand/select tools. H and V,
+the separate palette buttons, Space-drag and middle-button drag remain available.

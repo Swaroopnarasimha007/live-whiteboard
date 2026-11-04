@@ -6,12 +6,15 @@ import { getSectionHeader, layoutNodeText, ROUND_RECT_RADIUS, type RoutedEdge } 
 import type { BoardInteractions, BoardPointer } from './types';
 import { BOARD_THEME, SHAPE_COLORS } from './theme';
 import { ColorModeContext, DARK_THEME } from '../styles/colorMode';
+import { useCanvasEntrance } from './motion';
 
 export const SectionView = memo(function SectionView({ section }: { section: Section }) {
+  const entrance = useCanvasEntrance(`section:${section.id}`);
   const paint = useContext(ColorModeContext) === 'dark' ? DARK_THEME : BOARD_THEME;
   const title = getSectionHeader(section);
   return (
     <Group
+      ref={entrance}
       x={section.origin.x}
       y={section.origin.y}
       listening={false}
@@ -22,7 +25,7 @@ export const SectionView = memo(function SectionView({ section }: { section: Sec
         fill={paint.section}
         stroke={paint.border}
         strokeWidth={1}
-        cornerRadius={8}
+        cornerRadius={12}
       />
       <Text
         x={title.x}
@@ -51,9 +54,13 @@ interface NodeViewProps {
 }
 export const NodeView = memo(
   function NodeView({ node, origin, canDrag, interactions, pointer, register }: NodeViewProps) {
+    const entrance = useCanvasEntrance(`node:${node.id}`);
     const ref = useCallback(
-      (value: Konva.Group | null) => register(node.id, value),
-      [register, node.id],
+      (value: Konva.Group | null) => {
+        entrance.current = value;
+        register(node.id, value);
+      },
+      [register, node.id, entrance],
     );
     const dark = useContext(ColorModeContext) === 'dark';
     const text = layoutNodeText(node);
@@ -163,11 +170,13 @@ export const EdgeView = memo(function EdgeView({
   interactions: BoardInteractions;
   pointer: NodeViewProps['pointer'];
 }) {
+  const entrance = useCanvasEntrance(`edge:${edge.id}`);
   const dark = useContext(ColorModeContext) === 'dark';
   const stroke = dark ? SHAPE_COLORS[edge.color].fill : SHAPE_COLORS[edge.color].stroke;
   const lineProps = { points: [...route.points], stroke, strokeWidth: 1.5, hitStrokeWidth: 12 };
   return (
     <Group
+      ref={entrance}
       id={edge.id}
       name="board-edge"
       onPointerDown={(event) => {

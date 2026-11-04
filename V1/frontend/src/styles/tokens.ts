@@ -2,19 +2,19 @@ import type { Color } from '../contracts';
 /** Single source for DOM variables, canvas paint and measured label typography. */
 export const THEME = Object.freeze({
   font: 'Arial, sans-serif',
-  background: '#e8e8e8',
+  background: '#f3f5fb',
   surface: '#ffffff',
-  canvas: '#e8e8e8',
-  text: '#3f3f46',
-  muted: '#52525b',
-  border: '#d0d0d0',
+  canvas: '#fcfcff',
+  text: '#24304a',
+  muted: '#58657c',
+  border: '#dfe4ef',
   controlBorder: '#818187',
-  accent: '#5846b5',
-  accentSoft: '#e8e8e8',
+  accent: '#5b4bc4',
+  accentSoft: '#efedff',
   danger: '#b42318',
   dangerSoft: '#fff0ee',
-  grid: '#d0d0d0',
-  section: '#ffffffa6',
+  grid: '#e2e6f1',
+  section: '#f2f4fcbb',
   disabled: '#5c6878',
 });
 export const THEME_VARIABLES = Object.freeze(

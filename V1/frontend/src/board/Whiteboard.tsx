@@ -19,6 +19,7 @@ import { bindNavigation } from './navigation';
 import { EdgeView, NodeView, SectionView } from './views';
 import { gridLines, visibleScene } from './visibility';
 import { BOARD_THEME } from './theme';
+import { CanvasMotionContext, type CanvasMotion } from './motion';
 import { ColorModeContext, DARK_THEME } from '../styles/colorMode';
 import type { BoardInteractions, BoardPointer, WhiteboardHandle, WhiteboardProps } from './types';
 import './board.css';
@@ -81,6 +82,7 @@ export const Whiteboard = forwardRef<WhiteboardHandle, WhiteboardProps>(function
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [panning, setPanning] = useState(false);
   const [space, setSpace] = useState(false);
+  const [motion] = useState<CanvasMotion>(() => ({ seen: new Set(), active: new Set() }));
   const ratio = usePixelRatio();
   const descriptionId = useId();
   const camera = useSyncExternalStore(
@@ -239,9 +241,9 @@ export const Whiteboard = forwardRef<WhiteboardHandle, WhiteboardProps>(function
   return (
     <>
       <p id={descriptionId} className="board-sr-only">
-        Scroll to pan. Control or Command plus scroll to zoom. Hold Space and drag, use the hand
-        tool, or drag the middle mouse button to pan. Two fingers pan and pinch to zoom. Manual
-        navigation pauses follow live. Use the scene outline for text descriptions.
+        Scroll up to zoom in and down to zoom out at the pointer. Shift+scroll pans. Hold Space and
+        drag, use the hand tool, or drag the middle mouse button to pan. Two fingers pan and pinch
+        to zoom. Manual navigation pauses follow live. Use the scene outline for text descriptions.
       </p>
       <div
         ref={element}
@@ -295,31 +297,33 @@ export const Whiteboard = forwardRef<WhiteboardHandle, WhiteboardProps>(function
                 />
               )}
             </Layer>
-            <Layer ref={layerRef} {...transform} name="scene">
-              {visible.sections.map((section) => (
-                <SectionView key={section.id} section={section} />
-              ))}
-              {visible.edges.map(({ edge, route }) => (
-                <EdgeView
-                  key={edge.id}
-                  edge={edge}
-                  route={route}
-                  interactions={interactions}
-                  pointer={pointer}
-                />
-              ))}
-              {visible.nodes.map((node) => (
-                <NodeView
-                  key={node.id}
-                  node={nativeTransformIds?.includes(node.id) ? scene.nodes[node.id]! : node}
-                  origin={renderScene.sections[node.sectionId]!.origin}
-                  canDrag={tool === 'select' && !space && !panning}
-                  interactions={interactions}
-                  pointer={pointer}
-                  register={register}
-                />
-              ))}
-            </Layer>
+            <CanvasMotionContext.Provider value={motion}>
+              <Layer ref={layerRef} {...transform} name="scene">
+                {visible.sections.map((section) => (
+                  <SectionView key={section.id} section={section} />
+                ))}
+                {visible.edges.map(({ edge, route }) => (
+                  <EdgeView
+                    key={edge.id}
+                    edge={edge}
+                    route={route}
+                    interactions={interactions}
+                    pointer={pointer}
+                  />
+                ))}
+                {visible.nodes.map((node) => (
+                  <NodeView
+                    key={node.id}
+                    node={nativeTransformIds?.includes(node.id) ? scene.nodes[node.id]! : node}
+                    origin={renderScene.sections[node.sectionId]!.origin}
+                    canDrag={tool === 'select' && !space && !panning}
+                    interactions={interactions}
+                    pointer={pointer}
+                    register={register}
+                  />
+                ))}
+              </Layer>
+            </CanvasMotionContext.Provider>
             <Layer {...transform} name="interaction">
               {visible.edges
                 .filter(({ edge }) => selected.has(edge.id))

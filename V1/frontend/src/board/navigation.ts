@@ -165,13 +165,15 @@ export function bindNavigation(
     stop(event);
     options.onNavigationStart?.();
     const delta = normalizedWheel(event, element.clientHeight);
-    if (event.ctrlKey || event.metaKey)
+    if (event.shiftKey && !event.ctrlKey && !event.metaKey)
+      viewport.panBy({ x: -delta.x, y: -delta.y });
+    else if (delta.y !== 0)
       viewport.zoomAt(
         screenPoint(event),
         viewport.getViewport().scale *
           Math.exp(-Math.max(-1_000, Math.min(1_000, delta.y)) * 0.002),
       );
-    else viewport.panBy({ x: -delta.x, y: -delta.y });
+    else if (delta.x !== 0) viewport.panBy({ x: -delta.x, y: 0 });
   };
   const keydown = (event: KeyboardEvent) => {
     if (

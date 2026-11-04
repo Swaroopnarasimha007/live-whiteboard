@@ -15,6 +15,8 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronDown,
+  Hand,
+  MousePointer2,
 } from 'lucide-react';
 import type { RendererRuntime } from '../app/rendererRuntime';
 import type { SessionMode } from '../session';
@@ -412,8 +414,8 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
                 </p>
                 <button onClick={focusCanvas}>Focus canvas</button>
                 <p>
-                  Drag with Hand or hold Space to pan. Scroll to pan; Ctrl/Cmd+scroll zooms about
-                  the pointer.
+                  Scroll up to zoom in and down to zoom out at the pointer. Shift+scroll pans. Drag
+                  with Hand, hold Space, or drag the middle mouse button to pan.
                 </p>
               </details>
               <Diagnostics runtime={runtime} />
@@ -421,6 +423,20 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
           )}
         </div>
         <footer className="viewport-bar" aria-label="Whiteboard controls">
+          <button
+            className="navigation-toggle"
+            aria-label="Pan mode"
+            aria-pressed={editor.tool === 'hand'}
+            title="Switch between pan and select. H for hand, V for select."
+            onClick={() => runtime.editor.setTool(editor.tool === 'hand' ? 'select' : 'hand')}
+          >
+            {editor.tool === 'hand' ? (
+              <Hand size={16} aria-hidden="true" />
+            ) : (
+              <MousePointer2 size={16} aria-hidden="true" />
+            )}
+            <span>{editor.tool === 'hand' ? 'Pan mode' : 'Select mode'}</span>
+          </button>
           <label className="toggle-label" title="Show the grid; does not change snap">
             <input
               type="checkbox"

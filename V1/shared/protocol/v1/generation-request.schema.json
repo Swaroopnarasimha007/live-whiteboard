@@ -1,0 +1,722 @@
+{
+  "$defs": {
+    "BoardContext": {
+      "additionalProperties": false,
+      "properties": {
+        "activeSectionId": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "not": {
+                "enum": [
+                  "__defineGetter__",
+                  "__defineSetter__",
+                  "__lookupGetter__",
+                  "__lookupSetter__",
+                  "__proto__",
+                  "constructor",
+                  "hasOwnProperty",
+                  "isPrototypeOf",
+                  "propertyIsEnumerable",
+                  "prototype",
+                  "toLocaleString",
+                  "toString",
+                  "valueOf"
+                ]
+              },
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Activesectionid"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/ContextSection"
+          },
+          "maxItems": 100,
+          "title": "Sections",
+          "type": "array"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/ContextNode"
+          },
+          "maxItems": 5000,
+          "title": "Nodes",
+          "type": "array"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/ContextEdge"
+          },
+          "maxItems": 5000,
+          "title": "Edges",
+          "type": "array"
+        },
+        "viewport": {
+          "$ref": "#/$defs/Viewport"
+        },
+        "visibleWorldBounds": {
+          "$ref": "#/$defs/Box"
+        },
+        "selectedIds": {
+          "items": {
+            "maxLength": 64,
+            "minLength": 1,
+            "not": {
+              "enum": [
+                "__defineGetter__",
+                "__defineSetter__",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "__proto__",
+                "constructor",
+                "hasOwnProperty",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "prototype",
+                "toLocaleString",
+                "toString",
+                "valueOf"
+              ]
+            },
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "type": "string"
+          },
+          "title": "Selectedids",
+          "type": "array"
+        },
+        "contextComplete": {
+          "const": true,
+          "title": "Contextcomplete",
+          "type": "boolean"
+        },
+        "omittedEntityCount": {
+          "const": 0,
+          "title": "Omittedentitycount",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "activeSectionId",
+        "sections",
+        "nodes",
+        "edges",
+        "viewport",
+        "visibleWorldBounds",
+        "selectedIds",
+        "contextComplete",
+        "omittedEntityCount"
+      ],
+      "title": "BoardContext",
+      "type": "object"
+    },
+    "Box": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "maximum": 200000,
+          "minimum": 0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "maximum": 200000,
+          "minimum": 0,
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "Box",
+      "type": "object"
+    },
+    "ContextEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sectionId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Sectionid",
+          "type": "string"
+        },
+        "from": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "From",
+          "type": "string"
+        },
+        "to": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "To",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "arrow",
+            "line"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "title": "Label",
+          "type": "string"
+        },
+        "color": {
+          "enum": [
+            "neutral",
+            "blue",
+            "green",
+            "orange",
+            "red",
+            "purple"
+          ],
+          "title": "Color",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "manual",
+            "generated"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "locked": {
+          "title": "Locked",
+          "type": "boolean"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "sectionId",
+        "from",
+        "to",
+        "kind",
+        "label",
+        "color",
+        "source",
+        "locked",
+        "revision"
+      ],
+      "title": "ContextEdge",
+      "type": "object"
+    },
+    "ContextNode": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "Y",
+          "type": "number"
+        },
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sectionId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Sectionid",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "rect",
+            "roundRect",
+            "circle",
+            "ellipse",
+            "diamond",
+            "text"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 500,
+          "title": "Label",
+          "type": "string"
+        },
+        "color": {
+          "enum": [
+            "neutral",
+            "blue",
+            "green",
+            "orange",
+            "red",
+            "purple"
+          ],
+          "title": "Color",
+          "type": "string"
+        },
+        "width": {
+          "maximum": 2000,
+          "minimum": 24,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "maximum": 2000,
+          "minimum": 24,
+          "title": "Height",
+          "type": "number"
+        },
+        "locked": {
+          "title": "Locked",
+          "type": "boolean"
+        },
+        "source": {
+          "enum": [
+            "manual",
+            "generated"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "id",
+        "sectionId",
+        "type",
+        "label",
+        "color",
+        "width",
+        "height",
+        "locked",
+        "source",
+        "revision"
+      ],
+      "title": "ContextNode",
+      "type": "object"
+    },
+    "ContextSection": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/Point"
+        },
+        "bounds": {
+          "$ref": "#/$defs/Box"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "origin",
+        "bounds"
+      ],
+      "title": "ContextSection",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 100000,
+          "minimum": -100000,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "Transcript": {
+      "additionalProperties": false,
+      "properties": {
+        "segmentIds": {
+          "items": {
+            "maxLength": 64,
+            "minLength": 1,
+            "not": {
+              "enum": [
+                "__defineGetter__",
+                "__defineSetter__",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "__proto__",
+                "constructor",
+                "hasOwnProperty",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "prototype",
+                "toLocaleString",
+                "toString",
+                "valueOf"
+              ]
+            },
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Segmentids",
+          "type": "array"
+        },
+        "text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "startMs": {
+          "minimum": 0,
+          "title": "Startms",
+          "type": "number"
+        },
+        "endMs": {
+          "minimum": 0,
+          "title": "Endms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "segmentIds",
+        "text",
+        "startMs",
+        "endMs"
+      ],
+      "title": "Transcript",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "scale": {
+          "maximum": 4,
+          "minimum": 0.15,
+          "title": "Scale",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "scale"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "protocolVersion": {
+      "const": 1,
+      "title": "Protocolversion",
+      "type": "integer"
+    },
+    "requestId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "__defineGetter__",
+          "__defineSetter__",
+          "__lookupGetter__",
+          "__lookupSetter__",
+          "__proto__",
+          "constructor",
+          "hasOwnProperty",
+          "isPrototypeOf",
+          "propertyIsEnumerable",
+          "prototype",
+          "toLocaleString",
+          "toString",
+          "valueOf"
+        ]
+      },
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Requestid",
+      "type": "string"
+    },
+    "sessionId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "__defineGetter__",
+          "__defineSetter__",
+          "__lookupGetter__",
+          "__lookupSetter__",
+          "__proto__",
+          "constructor",
+          "hasOwnProperty",
+          "isPrototypeOf",
+          "propertyIsEnumerable",
+          "prototype",
+          "toLocaleString",
+          "toString",
+          "valueOf"
+        ]
+      },
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Sessionid",
+      "type": "string"
+    },
+    "sessionEpoch": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Sessionepoch",
+      "type": "integer"
+    },
+    "baseRevision": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Baserevision",
+      "type": "integer"
+    },
+    "idPrefix": {
+      "maxLength": 64,
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "__defineGetter__",
+          "__defineSetter__",
+          "__lookupGetter__",
+          "__lookupSetter__",
+          "__proto__",
+          "constructor",
+          "hasOwnProperty",
+          "isPrototypeOf",
+          "propertyIsEnumerable",
+          "prototype",
+          "toLocaleString",
+          "toString",
+          "valueOf"
+        ]
+      },
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Idprefix",
+      "type": "string"
+    },
+    "transcript": {
+      "$ref": "#/$defs/Transcript"
+    },
+    "board": {
+      "$ref": "#/$defs/BoardContext"
+    }
+  },
+  "required": [
+    "protocolVersion",
+    "requestId",
+    "sessionId",
+    "sessionEpoch",
+    "baseRevision",
+    "idPrefix",
+    "transcript",
+    "board"
+  ],
+  "title": "GenerationRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:live-whiteboard:v1:generation-request"
+}

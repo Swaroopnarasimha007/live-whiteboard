@@ -1,0 +1,130 @@
+# Advanced settings. MODE and API_KEY in V1/.env override provider selection.
+server:
+  host: 127.0.0.1
+  port: 8000
+  allowed_origins:
+  - http://localhost:5173
+  - http://127.0.0.1:5173
+  workers: 1
+  max_request_bytes: 524288
+transcription:
+  default_profile: mock
+  allow_client_profile_selection: true
+  enabled_profiles:
+  - whisper-small
+  - whisper-medium
+  - mock
+  profiles:
+    mock:
+      provider: mock
+      display_name: Mock transcript
+      fixture: request-flow
+    whisper-small:
+      provider: whisper
+      display_name: Whisper Small
+      model_path: models/faster-whisper-small
+      language: en
+    whisper-medium:
+      provider: whisper
+      display_name: Whisper Medium
+      model_path: models/faster-whisper-medium
+      language: en
+  audio:
+    encoding: pcm_s16le
+    sample_rate_hz: 16000
+    channels: 1
+    frame_ms: 100
+    max_buffer_ms: 60000
+  endpointing:
+    partial_emit_interval_ms: 150
+    max_segment_ms: 15000
+    target_chunk_ms: 8000
+    silence_ms: 600
+    context_ms: 500
+  model_cache:
+    max_loaded_models: 2
+    max_active_recognizers: 2
+diagram:
+  active_profile: mock
+  allow_client_profile_selection: false
+  enabled_profiles:
+  - mock
+  profiles:
+    mock:
+      provider: mock
+      model: request-flow
+    groq-default:
+      provider: groq
+      model: openai/gpt-oss-120b
+      api_key_env: API_KEY
+      options:
+        reasoning_effort: low
+        include_reasoning: false
+      capabilities:
+        text_streaming: true
+        token_limit_parameter: max_completion_tokens
+        temperature_support: false
+        context_limit: 131072
+        output_limit: 65536
+        reasoning_controls:
+        - reasoning_effort
+        - include_reasoning
+        verified: true
+    openrouter-default:
+      provider: openrouter
+      model: openai/gpt-4.1-mini
+      api_key_env: API_KEY
+      options: {}
+      capabilities:
+        token_limit_parameter: max_tokens
+        verified: true
+        context_limit: 32768
+        output_limit: 8192
+    openai-default:
+      provider: openai
+      model: gpt-4.1-mini
+      api_key_env: API_KEY
+      options: {}
+      capabilities:
+        token_limit_parameter: max_output_tokens
+        verified: true
+        context_limit: 32768
+        output_limit: 8192
+    gemini-default:
+      provider: gemini
+      model: gemini-3.6-flash
+      api_key_env: API_KEY
+      options: {}
+      capabilities:
+        token_limit_parameter: maxOutputTokens
+        verified: true
+        context_limit: 32768
+        output_limit: 8192
+    claude-default:
+      provider: anthropic
+      model: claude-sonnet-5-5
+      api_key_env: API_KEY
+      options: {}
+      capabilities:
+        token_limit_parameter: max_tokens
+        verified: true
+        context_limit: 32768
+        output_limit: 8192
+  connect_timeout_seconds: 10
+  first_text_timeout_seconds: 15
+  idle_text_timeout_seconds: 15
+  provider_timeout_seconds: 30
+  max_operations_per_request: 128
+  max_context_bytes: 262144
+  max_output_line_bytes: 65536
+  max_partial_buffer_bytes: 131072
+  max_output_tokens: 2048
+sessions:
+  max_sessions: 8
+  idle_ttl_seconds: 900
+  replay_ttl_seconds: 300
+  replay_max_bytes_per_session: 4194304
+  max_pending_events: 256
+logging:
+  include_transcript: false
+  include_audio: false

@@ -1,0 +1,1634 @@
+{
+  "operation": {
+    "valid": [
+      {
+        "op": "section.add",
+        "id": "g_r1_topic",
+        "title": "Server"
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "roundRect",
+        "label": "Server",
+        "place": {
+          "rightOf": "g_old_browser"
+        }
+      },
+      {
+        "op": "edge.add",
+        "id": "g_r1_link",
+        "section": "g_s1",
+        "from": "g_old_browser",
+        "to": "g_r1_server"
+      },
+      {
+        "op": "node.update",
+        "id": "g_r1_server",
+        "set": {
+          "at": [
+            200,
+            -20
+          ],
+          "label": "API"
+        }
+      },
+      {
+        "op": "edge.update",
+        "id": "g_r1_link",
+        "set": {
+          "label": ""
+        }
+      },
+      {
+        "op": "entity.delete",
+        "id": "g_r1_link"
+      }
+    ],
+    "invalid": [
+      {
+        "op": "section.add",
+        "id": "__proto__",
+        "title": "Server"
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "roundRect",
+        "label": " ",
+        "place": {
+          "rightOf": "g_old_browser"
+        }
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "roundRect",
+        "label": "Server",
+        "place": {
+          "rightOf": "g_old_browser"
+        },
+        "at": [
+          0,
+          0
+        ]
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "roundRect",
+        "label": "Server",
+        "place": {
+          "rightOf": "g_a",
+          "below": "g_b"
+        }
+      },
+      {
+        "op": "node.update",
+        "id": "g_r1_server",
+        "set": {}
+      },
+      {
+        "op": "edge.update",
+        "id": "g_r1_link",
+        "set": {
+          "color": null
+        }
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "svg",
+        "label": "Server",
+        "place": {
+          "rightOf": "g_old_browser"
+        }
+      },
+      {
+        "op": "node.add",
+        "id": "g_r1_server",
+        "section": "g_s1",
+        "type": "roundRect",
+        "label": "Server",
+        "place": {
+          "rightOf": "g_old_browser"
+        },
+        "extra": 1
+      },
+      {
+        "op": "node.update",
+        "id": "g_r1_server",
+        "set": {
+          "at": [
+            100001,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "generation-request": {
+    "valid": [
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      }
+    ],
+    "invalid": [
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": false,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 13
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_missing",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "circle",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 0
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1",
+            "a1"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "g_missing"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 2,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": true,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": true,
+          "omittedEntityCount": 0
+        }
+      },
+      {
+        "protocolVersion": 1,
+        "requestId": "r1",
+        "sessionId": "s1",
+        "sessionEpoch": 1,
+        "baseRevision": 12,
+        "idPrefix": "g_r1_",
+        "transcript": {
+          "segmentIds": [
+            "a1_7"
+          ],
+          "text": "The browser queries the database",
+          "startMs": 1400,
+          "endMs": 2900
+        },
+        "board": {
+          "activeSectionId": "g_s1",
+          "sections": [
+            {
+              "id": "g_s1",
+              "title": "Request flow",
+              "origin": {
+                "x": 100,
+                "y": 200
+              },
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 900,
+                "height": 600
+              }
+            }
+          ],
+          "nodes": [
+            {
+              "id": "g_old_browser",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Browser",
+              "color": "blue",
+              "x": 32,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "generated",
+              "locked": false,
+              "revision": 1
+            },
+            {
+              "id": "m_00000000-0000-4000-8000-000000000001",
+              "sectionId": "g_s1",
+              "type": "rect",
+              "label": "Database",
+              "color": "blue",
+              "x": 400,
+              "y": 48,
+              "width": 120,
+              "height": 64,
+              "source": "manual",
+              "locked": true,
+              "revision": 12
+            }
+          ],
+          "edges": [
+            {
+              "id": "g_old_edge",
+              "sectionId": "g_s1",
+              "from": "g_old_browser",
+              "to": "m_00000000-0000-4000-8000-000000000001",
+              "kind": "arrow",
+              "label": "queries",
+              "color": "neutral",
+              "source": "generated",
+              "locked": true,
+              "revision": 10
+            }
+          ],
+          "viewport": {
+            "x": 17,
+            "y": -20,
+            "scale": 1.5
+          },
+          "visibleWorldBounds": {
+            "x": 0,
+            "y": 0,
+            "width": 900,
+            "height": 600
+          },
+          "selectedIds": [
+            "m_00000000-0000-4000-8000-000000000001"
+          ],
+          "contextComplete": 1,
+          "omittedEntityCount": 0
+        }
+      }
+    ]
+  },
+  "generation-event": {
+    "valid": [
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "started",
+        "sequence": 1,
+        "baseRevision": 12
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "operation",
+        "sequence": 2,
+        "baseRevision": 12,
+        "operation": {
+          "op": "node.add",
+          "id": "g_r1_server",
+          "section": "g_s1",
+          "type": "roundRect",
+          "label": "Server",
+          "place": {
+            "rightOf": "g_old_browser"
+          }
+        }
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "warning",
+        "sequence": 3,
+        "code": "invalid_output",
+        "message": "Rejected invalid record."
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "completed",
+        "sequence": 4,
+        "operationCount": 1,
+        "warningCount": 1
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "failed",
+        "sequence": 4,
+        "code": "stream_interrupted",
+        "message": "Provider interrupted.",
+        "retryable": false
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "cancelled",
+        "sequence": 4,
+        "reason": "User stopped"
+      }
+    ],
+    "invalid": [
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "started",
+        "sequence": 0,
+        "baseRevision": 12
+      },
+      {
+        "wireVersion": 2,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "operation",
+        "sequence": 2,
+        "baseRevision": 12,
+        "operation": {
+          "op": "node.add",
+          "id": "g_r1_server",
+          "section": "g_s1",
+          "type": "roundRect",
+          "label": "Server",
+          "place": {
+            "rightOf": "g_old_browser"
+          }
+        }
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "completed",
+        "sequence": 4,
+        "operationCount": -1,
+        "warningCount": 1
+      },
+      {
+        "wireVersion": 1,
+        "requestId": "r1",
+        "sessionEpoch": 1,
+        "event": "started",
+        "sequence": 1,
+        "baseRevision": 12,
+        "extra": 1
+      }
+    ]
+  },
+  "audio-client-message": {
+    "valid": [
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "start",
+        "audioProtocolVersion": 1,
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 16000,
+          "channels": 1
+        }
+      },
+      {
+        "type": "finish"
+      },
+      {
+        "type": "abort"
+      }
+    ],
+    "invalid": [
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "start",
+        "audioProtocolVersion": 1,
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 48000,
+          "channels": 1
+        }
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "start",
+        "audioProtocolVersion": 1,
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 16000,
+          "channels": 2
+        }
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "start",
+        "audioProtocolVersion": 2,
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 16000,
+          "channels": 1
+        }
+      },
+      {
+        "type": "finish",
+        "audio": "not-pcm"
+      }
+    ]
+  },
+  "audio-server-event": {
+    "valid": [
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "ready",
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 16000,
+          "channels": 1
+        }
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "transcript",
+        "id": "a1_7",
+        "text": "Hello",
+        "startMs": 0,
+        "endMs": 100,
+        "isFinal": false
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "transcript",
+        "id": "a1_7",
+        "text": "Hello world",
+        "startMs": 0,
+        "endMs": 200,
+        "isFinal": true
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "error",
+        "code": "overloaded",
+        "message": "Capture paused"
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "closed",
+        "reason": "finished"
+      }
+    ],
+    "invalid": [
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "transcript",
+        "id": "a1_7",
+        "text": "Hello",
+        "startMs": 0,
+        "endMs": -1,
+        "isFinal": false
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "transcript",
+        "id": "a1_7",
+        "text": "Hello world",
+        "startMs": 0,
+        "endMs": 200,
+        "isFinal": "true"
+      },
+      {
+        "streamId": "a1",
+        "sessionEpoch": 1,
+        "type": "ready",
+        "profile": "mock",
+        "format": {
+          "encoding": "pcm_s16le",
+          "sampleRateHz": 16000,
+          "channels": 1
+        },
+        "extra": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "measuredAt": "2026-11-02T18:57:19.830Z",
+  "machine": {
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13500H",
+    "logicalCpus": 16,
+    "memoryGiB": 15.628067016601562,
+    "os": "win32 10.0.26200 x64"
+  },
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "trace": {
+    "paintEvents": 13,
+    "drawFrameEvents": 0,
+    "note": "Approximate browser paint evidence; Konva draw and rAF do not prove physical screen presentation."
+  },
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
+  "hardwareConcurrency": 16,
+  "dpr": 2,
+  "canvas": {
+    "width": 1100,
+    "height": 600
+  },
+  "workload": {
+    "visibleDatasetNodes": 500,
+    "visible500": 500,
+    "rate": 30,
+    "operations": 90,
+    "totalNavigationNodes": 5000,
+    "sections": 50,
+    "visible5000": 100
+  },
+  "stream": {
+    "phase": "completed",
+    "applied": 90,
+    "elapsedMs": 3085.900000002235,
+    "completeOperationToKonvaDrawMs": {
+      "samples": 90,
+      "p50": 35.399999998509884,
+      "p95": 54,
+      "max": 95.10000000149012
+    },
+    "commitToDrawMs": {
+      "samples": 90,
+      "p50": 19.699999999254942,
+      "p95": 36.80000000074506,
+      "max": 74.69999999925494
+    },
+    "dispatchIncludingLayoutMs": {
+      "samples": 90,
+      "p50": 5.600000001490116,
+      "p95": 7.900000002235174,
+      "max": 9.699999999254942
+    },
+    "layoutMs": {
+      "samples": 90,
+      "p50": 0.30000000074505806,
+      "p95": 0.5,
+      "max": 1
+    },
+    "decoderRecords": 90,
+    "decodeOnlyMs": 1.199999999254942,
+    "validationOnlyMs": 0.30000000074505806,
+    "lastDraw": 91,
+    "pendingDraws": 0
+  },
+  "routing": {
+    "iterations": 500,
+    "uncachedRoutingMs": 4.399999998509884,
+    "cachedRoutingMs": 0.5
+  },
+  "collision": {
+    "iterations": 500,
+    "collisionPlacementMs": 11.600000001490116,
+    "collisionAttempts": 2500
+  },
+  "navigation": {
+    "inputToDrawMs": {
+      "samples": 50,
+      "p50": 17.900000002235174,
+      "p95": 19.400000002235174,
+      "max": 22.800000000745058
+    },
+    "animationFrameIntervalsMs": {
+      "samples": 120,
+      "p50": 16.699999999999818,
+      "p95": 16.700000000000728,
+      "max": 16.800000000000182
+    },
+    "meanAnimationFrameFps": 60.00300015000751
+  },
+  "queueDelay": "Not included in transport benchmark; session acceptance tests cover queue grouping and separate age/latency."
+}

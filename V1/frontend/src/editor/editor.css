@@ -1,0 +1,131 @@
+.editor-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+.editor-surface[data-editor-tool='rect'],
+.editor-surface[data-editor-tool='roundRect'],
+.editor-surface[data-editor-tool='circle'],
+.editor-surface[data-editor-tool='ellipse'],
+.editor-surface[data-editor-tool='diamond'],
+.editor-surface[data-editor-tool='text'],
+.editor-surface[data-editor-tool='arrow'],
+.editor-surface[data-editor-tool='line'] {
+  cursor: crosshair;
+}
+.editor-label-overlay {
+  position: absolute;
+  z-index: 5;
+  background: var(--ui-surface);
+  border: 2px solid var(--ui-accent);
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 2px 10px #1e293b22;
+}
+.editor-label-overlay textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  resize: none;
+  border: 0;
+  padding: 8px;
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+.editor-label-overlay > div {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.editor-label-overlay button {
+  font-size: 12px;
+  padding: 4px 6px;
+}
+.editor-label-overlay small {
+  display: block;
+  padding: 4px;
+  font-size: 11px;
+}
+.editor-palette {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.editor-palette button {
+  padding: 5px 7px;
+  font-size: 13px;
+  text-align: left;
+}
+.editor-tool-hint {
+  color: var(--ui-muted);
+  font-size: 12px;
+  margin-block: 8px 16px;
+}
+.editor-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-block: 10px;
+}
+.editor-colors button {
+  width: 28px;
+  height: 36px;
+  padding: 3px;
+  font-size: 0;
+}
+.editor-colors button span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #64748b;
+}
+.editor-properties {
+  margin-block: 16px;
+}
+.editor-properties .full-label {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 130px;
+  overflow: auto;
+  padding: 8px;
+  background: var(--ui-canvas);
+  border-radius: 4px;
+}
+.editor-property-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.editor-property-actions button {
+  flex: 1 1 auto;
+  padding: 6px;
+  font-size: 13px;
+}
+.editor-size-form label {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 4px;
+  margin-block: 6px;
+}
+.editor-size-form input {
+  min-width: 0;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid var(--ui-controlBorder);
+  border-radius: 4px;
+}
+.editor-size-form button {
+  width: 100%;
+}
+.editor-message {
+  padding: 8px;
+  border-left: 3px solid #c25b0b;
+  background: #fff3e3;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}

@@ -1,0 +1,29 @@
+name: live-whiteboard-v1
+services:
+  backend:
+    build: ./backend
+    environment:
+      MODE: ${MODE:-}
+      API_KEY: ${API_KEY:-}
+    volumes:
+      - ./backend/config:/app/backend/config:ro
+      - whisper-models:/app/backend/models
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    restart: unless-stopped
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  whisper-models:

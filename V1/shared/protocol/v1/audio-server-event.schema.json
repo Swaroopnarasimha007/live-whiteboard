@@ -1,0 +1,456 @@
+{
+  "$defs": {
+    "AudioClosed": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "closed",
+          "title": "Type",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "finished",
+            "aborted",
+            "error"
+          ],
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "type",
+        "reason"
+      ],
+      "title": "AudioClosed",
+      "type": "object"
+    },
+    "AudioError": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "error",
+          "title": "Type",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "type",
+        "code",
+        "message"
+      ],
+      "title": "AudioError",
+      "type": "object"
+    },
+    "AudioFormat": {
+      "additionalProperties": false,
+      "properties": {
+        "encoding": {
+          "const": "pcm_s16le",
+          "default": "pcm_s16le",
+          "title": "Encoding",
+          "type": "string"
+        },
+        "sampleRateHz": {
+          "const": 16000,
+          "default": 16000,
+          "title": "Sampleratehz",
+          "type": "integer"
+        },
+        "channels": {
+          "const": 1,
+          "default": 1,
+          "title": "Channels",
+          "type": "integer"
+        }
+      },
+      "title": "AudioFormat",
+      "type": "object"
+    },
+    "AudioProcessed": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "processed",
+          "default": "processed",
+          "title": "Type",
+          "type": "string"
+        },
+        "samples": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Samples",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "samples"
+      ],
+      "title": "AudioProcessed",
+      "type": "object"
+    },
+    "AudioProgress": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "progress",
+          "default": "progress",
+          "title": "Type",
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "transcribing",
+            "listening"
+          ],
+          "title": "Stage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "stage"
+      ],
+      "title": "AudioProgress",
+      "type": "object"
+    },
+    "AudioReady": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "ready",
+          "title": "Type",
+          "type": "string"
+        },
+        "profile": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Profile",
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/$defs/AudioFormat"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "type",
+        "profile",
+        "format"
+      ],
+      "title": "AudioReady",
+      "type": "object"
+    },
+    "TranscriptEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "streamId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Streamid",
+          "type": "string"
+        },
+        "sessionEpoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sessionepoch",
+          "type": "integer"
+        },
+        "type": {
+          "const": "transcript",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "not": {
+            "enum": [
+              "__defineGetter__",
+              "__defineSetter__",
+              "__lookupGetter__",
+              "__lookupSetter__",
+              "__proto__",
+              "constructor",
+              "hasOwnProperty",
+              "isPrototypeOf",
+              "propertyIsEnumerable",
+              "prototype",
+              "toLocaleString",
+              "toString",
+              "valueOf"
+            ]
+          },
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "startMs": {
+          "minimum": 0,
+          "title": "Startms",
+          "type": "number"
+        },
+        "endMs": {
+          "minimum": 0,
+          "title": "Endms",
+          "type": "number"
+        },
+        "isFinal": {
+          "title": "Isfinal",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "streamId",
+        "sessionEpoch",
+        "type",
+        "id",
+        "text",
+        "startMs",
+        "endMs",
+        "isFinal"
+      ],
+      "title": "TranscriptEvent",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "closed": "#/$defs/AudioClosed",
+      "error": "#/$defs/AudioError",
+      "processed": "#/$defs/AudioProcessed",
+      "progress": "#/$defs/AudioProgress",
+      "ready": "#/$defs/AudioReady",
+      "transcript": "#/$defs/TranscriptEvent"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/AudioReady"
+    },
+    {
+      "$ref": "#/$defs/TranscriptEvent"
+    },
+    {
+      "$ref": "#/$defs/AudioProgress"
+    },
+    {
+      "$ref": "#/$defs/AudioProcessed"
+    },
+    {
+      "$ref": "#/$defs/AudioError"
+    },
+    {
+      "$ref": "#/$defs/AudioClosed"
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:live-whiteboard:v1:audio-server-event"
+}

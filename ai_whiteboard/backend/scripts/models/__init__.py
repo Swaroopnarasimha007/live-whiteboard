@@ -1,1 +1,1 @@
-"""Official model setup utilities (no automatic download at application startup)."""
+"""Official model setup utilities for startup and manual downloads."""

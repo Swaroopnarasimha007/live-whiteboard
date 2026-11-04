@@ -95,15 +95,20 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -e ".[speech]"
-python -m scripts.models.ensure
 python -m app
 ```
+
+On first startup, the backend automatically downloads the selected Whisper model
+if it is missing. This needs internet access and may take a few minutes; later
+starts reuse it. If download fails, the board backend still starts and reports
+speech as unavailable until the model can be installed. Run
+`python -m scripts.models.ensure` first only if you want to download the model
+before launching the server.
 
 If PowerShell blocks activation, run the virtual environment interpreter directly:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e ".[speech]"
-.\.venv\Scripts\python.exe -m scripts.models.ensure
 .\.venv\Scripts\python.exe -m app
 ```
 
@@ -115,7 +120,6 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[speech]"
-python -m scripts.models.ensure
 python -m app
 ```
 
@@ -124,9 +128,13 @@ For exact locked dependencies, install `uv`, then run from `backend`:
 
 ```sh
 uv sync --frozen --no-dev --extra speech
-uv run --no-sync python -m scripts.models.ensure
 uv run --no-sync python -m app
 ```
+
+The first `python -m app` startup downloads the configured Whisper model when it
+is missing. If the download cannot complete, the board still starts with speech
+unavailable. To pre-download it, run `python -m scripts.models.ensure` (or
+`uv run --no-sync python -m scripts.models.ensure`) before starting the server.
 
 ### Frontend — second terminal
 
@@ -148,7 +156,8 @@ The backend uses one worker because session state lives in memory.
 Set `.env` to `MODE=mock` and `API_KEY=`. Set `speech_profile: mock` in
 `backend/config/settings.yaml`, then start normally. No model is downloaded.
 The UI also has a built-in **Start demo**. A backend configured for Whisper
-still needs its model before it can start.
+tries to install the model at startup; if that is unavailable, the backend still
+starts and reports speech as unavailable until setup succeeds.
 
 For a local mock backend, `python -m pip install -e .` is enough; speech extras
 are only needed for real transcription.

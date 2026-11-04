@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from app.config import BACKEND_DIR
-from app.speech.models import load_whisper_model, model_valid
+from app.speech.models import load_whisper_model, model_valid, whisper_installed
 
 MODELS = {
     "whisper-small": "Systran/faster-whisper-small",
@@ -12,7 +12,16 @@ MODELS = {
 }
 
 
+class ModelInstallDependencyError(RuntimeError):
+    """The optional speech dependencies needed for model setup are missing."""
+
+
 def install(profile, destination):
+    if not whisper_installed():
+        raise ModelInstallDependencyError(
+            "Whisper is selected, but its Python dependencies are missing. "
+            'From the backend directory run: python -m pip install -e ".[speech]"'
+        )
     from huggingface_hub import HfApi, snapshot_download
 
     model = MODELS[profile]

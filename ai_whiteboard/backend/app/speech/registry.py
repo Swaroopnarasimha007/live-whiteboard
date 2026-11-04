@@ -1,5 +1,6 @@
 import asyncio
 
+from app.diagnostics import diagnostic
 from app.contracts.audio import SpeechStreamConfig
 
 from .errors import SpeechError
@@ -37,10 +38,41 @@ class SpeechRegistry:
     async def preload(self):
         name = self.settings.transcription.default_profile
         if self.settings.transcription.profiles[name].provider == "whisper":
-            self.select_profile(name)
+            # First run may have no local model yet. Install it before profile
+            # availability checks so a fresh clone can start with `python -m app`.
+            from scripts.models.ensure import ensure_models
+
+            try:
+                await asyncio.to_thread(ensure_models, self.settings)
+            except Exception as error:
+                # Speech is optional for the board itself. Keep the API usable if
+                # model setup fails, and expose the unavailable profile in capabilities.
+                diagnostic(
+                    "speech.model_setup_failed",
+                    warning=True,
+                    profile=name,
+                    error_type=type(error).__name__,
+                    reason=str(error),
+                )
+                return
+            available, reason = self.availability(name)
+            if not available:
+                diagnostic(
+                    "speech.profile_unavailable", warning=True, profile=name, reason=reason
+                )
+                return
             path = self.settings.model_path(name)
-            await self.cache.acquire(path)
-            await self.cache.release(path)
+            try:
+                self.select_profile(name)
+                await self.cache.acquire(path)
+                await self.cache.release(path)
+            except SpeechError as error:
+                diagnostic(
+                    "speech.model_load_failed",
+                    warning=True,
+                    profile=name,
+                    reason=error.code,
+                )
 
     def availability(self, profile):
         config = self.settings.transcription

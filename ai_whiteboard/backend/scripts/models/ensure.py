@@ -1,9 +1,9 @@
-"""Install the selected Whisper model once; used by Docker's initialization service."""
+"""Install the selected Whisper model once during first application startup."""
 
 from app.config import load_settings
 from app.speech.models import model_valid
 
-from .install import MODELS, install
+from .install import MODELS, ModelInstallDependencyError, install
 
 
 def ensure_models(settings=None):
@@ -20,7 +20,15 @@ def ensure_models(settings=None):
     if name not in MODELS or target.name != MODELS[name].split("/")[-1]:
         raise ValueError("Custom speech models must be installed at the configured path.")
     print(f"Installing {name}; first startup needs internet and may take a few minutes.")
-    install(name, target.parent)
+    try:
+        install(name, target.parent)
+    except ModelInstallDependencyError:
+        raise
+    except Exception as error:
+        raise RuntimeError(
+            f"Could not install {name}. Check your internet connection and available disk space, "
+            "then start the backend again."
+        ) from error
 
 
 if __name__ == "__main__":

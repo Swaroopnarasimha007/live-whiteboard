@@ -123,6 +123,7 @@ test('grid, snap and follow remain independent and focused canvas gestures never
   page,
 }) => {
   await page.goto('/');
+  await expect(page.getByRole('checkbox', { name: 'Grid', exact: true })).toBeChecked();
   await fixture(page);
   await page.getByRole('checkbox', { name: 'Grid', exact: true }).check();
   await expect(page.getByRole('checkbox', { name: 'Snap', exact: true })).not.toBeChecked();

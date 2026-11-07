@@ -81,7 +81,7 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
       // Theme switching remains available when browser storage is restricted.
     }
   }, [colorMode]);
-  const [grid, setGrid] = useState(false);
+  const [grid, setGrid] = useState(true);
   const [panelExpanded, setPanelExpanded] = useState(false);
   const [name, setName] = useState('Untitled session');
   const panelButton = useRef<HTMLButtonElement>(null);

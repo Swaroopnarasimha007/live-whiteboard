@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "sessionId": {
+      "maxLength": 64,
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "__defineGetter__",
+          "__defineSetter__",
+          "__lookupGetter__",
+          "__lookupSetter__",
+          "__proto__",
+          "constructor",
+          "hasOwnProperty",
+          "isPrototypeOf",
+          "propertyIsEnumerable",
+          "prototype",
+          "toLocaleString",
+          "toString",
+          "valueOf"
+        ]
+      },
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Sessionid",
+      "type": "string"
+    },
+    "sessionEpoch": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Sessionepoch",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "sessionId",
+    "sessionEpoch"
+  ],
+  "title": "SessionOwner",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:live-whiteboard:v1:session-owner"
+}

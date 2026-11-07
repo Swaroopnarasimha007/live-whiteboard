@@ -1,0 +1,28 @@
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend and test output
+node_modules/
+dist/
+dist-ssr/
+.cache/
+coverage/
+test-results/
+playwright-report/
+
+# Logs and editor files
+*.log
+.DS_Store
+.idea/
+.vscode/

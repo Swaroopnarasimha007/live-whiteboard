@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Whiteboard integration harness</title>
+    <link rel="stylesheet" href="/src/app/scaffold.css" />
+    <script type="module">
+      import { THEME_VARIABLES } from '/src/styles/tokens.ts';
+      Object.entries(THEME_VARIABLES).forEach(([key, value]) =>
+        document.documentElement.style.setProperty(key, value),
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

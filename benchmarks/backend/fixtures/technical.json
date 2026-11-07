@@ -1,0 +1,8 @@
+{
+  "voice": "Microsoft David Desktop",
+  "text": "The browser sends a request to the server. The server queries the database. A cache stores the result. The queue sends work to a worker.",
+  "created": "2026-11-03T18:27:11.2460594+05:30",
+  "sha256": "4cae04cd4dfeb3da0868b46e974ac37efb704441cf1b1c0c11e078ec8765ea08",
+  "provenance": "Synthetic Windows System.Speech offline TTS; original task-specific text; no human subject or external recording.",
+  "limitation": "Single synthetic US voice; not representative lecture/accent accuracy."
+}

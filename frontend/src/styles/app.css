@@ -904,10 +904,7 @@ p {
   --neu-inset: inset 0 2px 8px rgb(0 0 0 / 20%);
   --neu-control-edge: var(--glass-border);
   --neu-control-hover: rgb(255 255 255 / 55%);
-  background:
-    radial-gradient(circle at 80% 15%, rgb(32 178 170 / 65%), transparent 32%),
-    radial-gradient(circle at 12% 78%, rgb(255 20 147 / 60%), transparent 38%),
-    linear-gradient(135deg, #0080ff 0%, #8b00ff 50%, #ff1493 100%);
+  background: radial-gradient(ellipse at 50% 0%, #33363b 0%, #17181b 48%, #09090b 100%);
   color: #ffffff;
   text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
 }
@@ -968,7 +965,7 @@ p {
   .whiteboard-app[data-theme='dark'] .tool-rail,
   .whiteboard-app[data-theme='dark'] .board-panel,
   .whiteboard-app[data-theme='dark'] button {
-    background: rgb(30 20 60 / 85%);
+    background: #202124;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -1056,5 +1053,119 @@ p {
   }
   .panel-label {
     display: none;
+  }
+}
+
+/* Monochrome glass: only dark mode overrides the palette. */
+.whiteboard-app[data-theme='dark'] {
+  --glass-fill: rgb(255 255 255 / 6%);
+  --glass-border: rgb(255 255 255 / 12%);
+  --neu-blue: #3a3c40;
+  --neu-pink: #3a3c40;
+  --neu-accent: #f5f5f7;
+  --neu-heading: #f5f5f7;
+  --neu-text: #c5c5ca;
+}
+.whiteboard-app[data-theme='dark'] .brand-mark,
+.whiteboard-app[data-theme='dark'] .empty-content > svg {
+  background: linear-gradient(145deg, #505258, #292a2f);
+  color: #f5f5f7;
+  box-shadow:
+    inset 0 1px 0 #ffffff26,
+    0 4px 12px #00000030;
+}
+.whiteboard-app[data-theme='dark'] button:hover:enabled {
+  transform: none;
+}
+.whiteboard-app[data-theme='dark'] button:disabled {
+  color: #88888e;
+  background: rgb(255 255 255 / 3%);
+  box-shadow: none;
+}
+.whiteboard-app[data-theme='dark'] select option {
+  background: #242428;
+  color: #f5f5f7;
+}
+/* Consistent panel hierarchy and comfortable reading measure. */
+.board-panel {
+  padding: 16px;
+  scrollbar-gutter: stable;
+}
+.board-panel > section,
+.board-panel > details {
+  margin: 0 0 16px;
+  padding: 16px 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--ui-border);
+}
+.board-panel .panel-heading {
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+}
+.board-panel section h2 {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  letter-spacing: 0;
+}
+.board-panel p {
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.panel-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin-block: 16px;
+}
+.panel-actions button {
+  width: 100%;
+  min-height: 40px;
+  white-space: normal;
+}
+.panel-connection {
+  margin-block: 16px;
+  padding-block: 12px;
+  border-block: 1px solid var(--ui-border);
+}
+.panel-connection label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.panel-connection select {
+  width: 100%;
+  font-weight: 400;
+}
+.panel-connection small {
+  font-weight: 400;
+}
+.board-panel details > summary {
+  padding-block: 12px;
+  line-height: 1.5;
+}
+.board-panel details[open] > summary {
+  margin-bottom: 8px;
+}
+.board-panel .text-button.danger {
+  margin-top: 16px;
+}
+.board-panel .editor-property-actions {
+  gap: 10px;
+}
+@media (min-width: 1100px) {
+  .app-workspace.panel-open {
+    grid-template-columns: 96px minmax(0, 1fr) 320px;
+  }
+  .app-workspace.panel-open.panel-expanded {
+    grid-template-columns: 96px minmax(0, 1fr) min(520px, 48vw);
+  }
+}
+@media (max-width: 1000px) {
+  .app-workspace,
+  .app-workspace.panel-open {
+    padding-inline: 8px;
+    gap: 8px;
   }
 }

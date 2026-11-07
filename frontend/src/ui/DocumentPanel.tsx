@@ -24,7 +24,7 @@ export function DocumentPanel({ runtime }: { runtime: RendererRuntime }) {
         {labels[state.saveState]}
       </p>
       {state.message && <p className="recovery-note">{state.message}</p>}
-      <div className="button-row">
+      <div className="panel-actions">
         <button
           onClick={() => {
             const blob = new Blob([runtime.document.exportText()], { type: 'application/json' });

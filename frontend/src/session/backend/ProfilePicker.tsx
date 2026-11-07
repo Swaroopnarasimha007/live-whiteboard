@@ -14,7 +14,7 @@ export function ProfilePicker({
   }, [bridge]);
   const caps = state.capabilities;
   return (
-    <div aria-label="Backend connection">
+    <div className="panel-connection" aria-label="Backend connection">
       <p role="status">{state.message || 'Start connects to the local backend.'}</p>
       {!caps && (
         <button

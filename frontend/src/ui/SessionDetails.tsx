@@ -38,7 +38,7 @@ export function SessionDetails({ runtime, mode }: { runtime: RendererRuntime; mo
           {state.message}
         </p>
       )}
-      <div className="button-row">
+      <div className="panel-actions">
         <button
           disabled={!state.queued.length || state.inFlight || state.canRetry}
           onClick={session.sendNow}

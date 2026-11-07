@@ -5,19 +5,19 @@ export type ColorMode = 'light' | 'dark';
 export const ColorModeContext = createContext<ColorMode>('light');
 export const DARK_THEME = Object.freeze({
   ...THEME,
-  background: '#4e21ba',
+  background: '#111113',
   surface: '#ffffff26',
-  canvas: '#151d2b',
+  canvas: '#171719',
   section: '#ffffff26',
-  text: '#ecf0fa',
-  muted: '#adb9cd',
+  text: '#f5f5f7',
+  muted: '#b8b8bf',
   border: '#ffffff40',
   controlBorder: '#858b9b',
-  accent: '#20b2aa',
+  accent: '#e4e4e7',
   accentSoft: '#ffffff33',
   danger: '#ffaca5',
   dangerSoft: '#482e32',
-  grid: '#29354a',
+  grid: '#303033',
   disabled: '#979cab',
 });
 export const DARK_THEME_VARIABLES = Object.freeze(

@@ -823,6 +823,161 @@ p {
 .whiteboard-app[data-theme='light'] {
   color-scheme: light;
 }
+/* Theme treatments share the existing component geometry and interaction states. */
+.whiteboard-app[data-theme='light'] {
+  --neu-base: #e8e8e8;
+  --neu-blue: #c8e0f4;
+  --neu-pink: #f5e0e8;
+  --neu-light: #ffffff;
+  --neu-dark: #d0d0d0;
+  --neu-accent: #7b68ee;
+  --neu-heading: #3f3f46;
+  --neu-text: #52525b;
+  --neu-raised: -5px -5px 15px #ffffff, 5px 5px 15px #d0d0d0;
+  --neu-inset: inset -5px -5px 15px #ffffff, inset 5px 5px 15px #d0d0d0;
+  --neu-control-edge: transparent;
+  --neu-control-hover: #7b68ee;
+}
+.whiteboard-app[data-theme='light'] h1,
+.whiteboard-app[data-theme='light'] h2,
+.whiteboard-app[data-theme='light'] h3 {
+  color: var(--neu-heading);
+  font-weight: 600;
+}
+.whiteboard-app[data-theme='light'] .tool-rail,
+.whiteboard-app[data-theme='light'] .board-panel {
+  border-color: transparent;
+  box-shadow:
+    -10px -10px 30px #ffffff,
+    10px 10px 30px #d0d0d0;
+}
+.whiteboard-app[data-theme='light'] button {
+  background: var(--neu-base);
+  border-color: transparent;
+  box-shadow: var(--neu-raised);
+  transition:
+    box-shadow 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+.whiteboard-app[data-theme='light'] button:hover:enabled {
+  background: var(--neu-base);
+  box-shadow:
+    -6px -6px 18px #ffffff,
+    6px 6px 18px #c9c9c9;
+}
+.whiteboard-app[data-theme='light'] button:active:enabled,
+.whiteboard-app[data-theme='light'] button[aria-pressed='true'],
+.whiteboard-app[data-theme='light'] .panel-toggle[aria-expanded='true'] {
+  background: var(--neu-blue);
+  box-shadow: var(--neu-inset);
+}
+.whiteboard-app[data-theme='light'] button.primary {
+  color: var(--neu-heading);
+  background: var(--neu-base);
+  box-shadow: var(--neu-raised);
+}
+.whiteboard-app[data-theme='light'] input:not([type='checkbox']),
+.whiteboard-app[data-theme='light'] select,
+.whiteboard-app[data-theme='light'] textarea,
+.whiteboard-app[data-theme='light'] .zoom-controls {
+  background: var(--neu-base);
+  border-color: transparent;
+  box-shadow: var(--neu-inset);
+}
+.whiteboard-app[data-theme='light'] .brand-mark,
+.whiteboard-app[data-theme='light'] .empty-content > svg {
+  color: var(--neu-heading);
+  background: var(--neu-blue);
+  box-shadow:
+    -4px -4px 10px #ffffff,
+    4px 4px 10px #d0d0d0;
+}
+.whiteboard-app[data-theme='light'] .capture-indicator.is-recording {
+  background: var(--neu-pink);
+}
+.whiteboard-app[data-theme='dark'] {
+  --glass-fill: rgb(255 255 255 / 15%);
+  --glass-border: rgb(255 255 255 / 20%);
+  --neu-base: var(--glass-fill);
+  --neu-raised: 0 8px 32px rgb(0 0 0 / 12%);
+  --neu-inset: inset 0 2px 8px rgb(0 0 0 / 20%);
+  --neu-control-edge: var(--glass-border);
+  --neu-control-hover: rgb(255 255 255 / 55%);
+  background:
+    radial-gradient(circle at 80% 15%, rgb(32 178 170 / 65%), transparent 32%),
+    radial-gradient(circle at 12% 78%, rgb(255 20 147 / 60%), transparent 38%),
+    linear-gradient(135deg, #0080ff 0%, #8b00ff 50%, #ff1493 100%);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+}
+.whiteboard-app[data-theme='dark'] .app-topbar,
+.whiteboard-app[data-theme='dark'] .statusbar,
+.whiteboard-app[data-theme='dark'] .viewport-bar,
+.whiteboard-app[data-theme='dark'] .tool-rail,
+.whiteboard-app[data-theme='dark'] .board-panel,
+.whiteboard-app[data-theme='dark'] .board-notice,
+.whiteboard-app[data-theme='dark'] .pan-menu > div {
+  background: var(--glass-fill);
+  border-color: var(--glass-border);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--neu-raised);
+}
+.whiteboard-app[data-theme='dark'] button {
+  color: #ffffff;
+  background: rgb(255 255 255 / 10%);
+  border-color: var(--glass-border);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease;
+}
+.whiteboard-app[data-theme='dark'] button:hover:enabled {
+  color: #ffffff;
+  background: rgb(255 255 255 / 20%);
+  transform: scale(1.05);
+}
+.whiteboard-app[data-theme='dark'] button:active:enabled,
+.whiteboard-app[data-theme='dark'] button[aria-pressed='true'] {
+  background: rgb(255 255 255 / 25%);
+  box-shadow: var(--neu-inset);
+}
+.whiteboard-app[data-theme='dark'] button:focus-visible,
+.whiteboard-app[data-theme='dark'] input:focus-visible,
+.whiteboard-app[data-theme='dark'] select:focus-visible,
+.whiteboard-app[data-theme='dark'] textarea:focus-visible {
+  outline-color: #ffffff;
+}
+.whiteboard-app[data-theme='dark'] input:not([type='checkbox']),
+.whiteboard-app[data-theme='dark'] select,
+.whiteboard-app[data-theme='dark'] textarea {
+  color: #ffffff;
+  background: rgb(255 255 255 / 12%);
+  border-color: var(--glass-border);
+}
+.whiteboard-app[data-theme='dark'] .board-region {
+  text-shadow: none;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .whiteboard-app[data-theme='dark'] .app-topbar,
+  .whiteboard-app[data-theme='dark'] .statusbar,
+  .whiteboard-app[data-theme='dark'] .viewport-bar,
+  .whiteboard-app[data-theme='dark'] .tool-rail,
+  .whiteboard-app[data-theme='dark'] .board-panel,
+  .whiteboard-app[data-theme='dark'] button {
+    background: rgb(30 20 60 / 85%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .whiteboard-app[data-theme='dark'] button:hover:enabled {
+    transform: none;
+  }
+}
 .topbar-utilities {
   display: flex;
   align-items: center;

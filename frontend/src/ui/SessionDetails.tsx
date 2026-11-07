@@ -59,37 +59,6 @@ export function SessionDetails({ runtime, mode }: { runtime: RendererRuntime; mo
           </button>
         )}
       </div>
-      <details>
-        <summary>Transcript ({state.transcript.length})</summary>
-        <p className="muted">
-          {mode === 'backend'
-            ? 'Audio uses the selected backend speech profile.'
-            : 'Transcription is mocked in standalone modes.'}{' '}
-          Only finalized audio chunks create drawing requests. Longer holds update the drawing
-          progressively.
-        </p>
-        {state.interim && (
-          <p className="interim" data-testid="interim-transcript">
-            Interim: {state.interim.text}
-          </p>
-        )}
-        {state.hiddenTranscriptCount > 0 && (
-          <p>
-            {state.hiddenTranscriptCount} older display entries hidden; pending text is retained.
-          </p>
-        )}
-        <ol className="transcript-list">
-          {state.transcript.map((event) => (
-            <li key={event.id}>
-              <p>{event.text}</p>
-              <small>
-                Final · {event.status} · {(event.startMs / 1000).toFixed(1)}–
-                {(event.endMs / 1000).toFixed(1)} s
-              </small>
-            </li>
-          ))}
-        </ol>
-      </details>
       {mode === 'microphone' && (
         <details open>
           <summary>{mic.label}</summary>

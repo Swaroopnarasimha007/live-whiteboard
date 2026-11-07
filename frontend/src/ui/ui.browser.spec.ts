@@ -30,7 +30,7 @@ test('pan toggle stays in sync with the existing hand/select tools and preserves
   await expect(board(page)).toHaveAttribute('data-scene-revision', revision!);
 });
 async function fixture(page: Page) {
-  await page.getByText('Developer tools', { exact: true }).click();
+  await page.getByRole('tab', { name: 'Developer tools', exact: true }).click();
   await page.getByRole('button', { name: 'Load renderer fixture' }).click();
   await expect(board(page)).toHaveAttribute('data-scene-revision', '1');
 }
@@ -96,7 +96,7 @@ test('keyboard can insert shapes, create a connection from the outline and edit 
   await page.getByRole('button', { name: 'Add circle', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(board(page)).toHaveAttribute('data-visible-nodes', '2');
-  await page.getByText('Scene outline', { exact: true }).click();
+  await page.getByRole('tab', { name: 'Scene outline', exact: true }).click();
   await page.getByRole('button', { name: 'Add arrow', exact: true }).focus();
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Connect Rectangle', exact: true }).focus();
@@ -106,6 +106,7 @@ test('keyboard can insert shapes, create a connection from the outline and edit 
   await expect(board(page)).toHaveAttribute('data-visible-edges', '1');
   await page.getByRole('button', { name: 'Select Rectangle', exact: true }).focus();
   await page.keyboard.press('Enter');
+  await page.getByRole('tab', { name: 'Selection properties', exact: true }).click();
   const width = page.getByRole('spinbutton', { name: 'Object width' });
   await width.fill('240');
   await page.getByRole('button', { name: 'Apply size', exact: true }).focus();
@@ -198,6 +199,7 @@ for (const width of [1280, 768, 390]) {
     expect(expanded.x).toBeLessThan(before.x);
     expect(expanded.x + expanded.width).toBeCloseTo(before.x + before.width, 0);
     await expect(board(page)).toHaveAttribute('data-scene-revision', revision!);
+    await page.getByRole('tab', { name: 'Selection properties', exact: true }).click();
     await expect(page.getByRole('spinbutton', { name: 'Object width' })).toBeVisible();
     await page.getByRole('button', { name: 'Collapse board panel', exact: true }).click();
     expect((await panel.boundingBox())!.width).toBeCloseTo(before.width, 0);

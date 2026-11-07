@@ -24,10 +24,8 @@ import { EditorSurface, handleEditorKeyDown } from '../editor';
 import { ColorModeContext, DARK_THEME_VARIABLES, type ColorMode } from '../styles/colorMode';
 import { THEME_VARIABLES } from '../styles/tokens';
 import { ToolRail } from './ToolRail';
-import { ScenePanel } from './ScenePanel';
-import { SessionDetails } from './SessionDetails';
-import { Diagnostics } from './Diagnostics';
-import { DocumentPanel } from './DocumentPanel';
+import { PanelSections } from './PanelSections';
+import { TranscriptPanel } from './TranscriptPanel';
 import { HoldToTalk } from './HoldToTalk';
 import { captureLabel, generationLabel } from './status';
 
@@ -374,7 +372,7 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
               aria-label="Board information"
             >
               <div className="panel-heading">
-                <h2>Session & board</h2>
+                <h2>Transcript & board</h2>
                 <div className="panel-heading-actions">
                   <button
                     aria-label={panelExpanded ? 'Collapse board panel' : 'Expand board panel'}
@@ -398,27 +396,8 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
                   </button>
                 </div>
               </div>
-              <SessionDetails runtime={runtime} mode={mode} />
-              <ScenePanel runtime={runtime} />
-              <DocumentPanel runtime={runtime} />
-              <details>
-                <summary>Keyboard & navigation</summary>
-                <p>
-                  V select · H hand · R rectangle · Shift+R rounded rectangle · C circle · O ellipse
-                  · D diamond · T text · A arrow · L line.
-                </p>
-                <p>
-                  Arrow keys move the selected nodes; Shift moves 10 units. Enter edits a selected
-                  label. Escape cancels. Ctrl/Cmd+Z undoes, Ctrl/Cmd+D duplicates. These shortcuts
-                  stay off while using controls or typing.
-                </p>
-                <button onClick={focusCanvas}>Focus canvas</button>
-                <p>
-                  Scroll up to zoom in and down to zoom out at the pointer. Shift+scroll pans. Drag
-                  with Hand, hold Space, or drag the middle mouse button to pan.
-                </p>
-              </details>
-              <Diagnostics runtime={runtime} />
+              <TranscriptPanel runtime={runtime} mode={mode} />
+              <PanelSections runtime={runtime} mode={mode} focusCanvas={focusCanvas} />
             </aside>
           )}
         </div>

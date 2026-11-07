@@ -1,7 +1,13 @@
 import { useState, useSyncExternalStore } from 'react';
 import type { RendererRuntime } from '../app/rendererRuntime';
 import type { ApplyResult } from '../contracts';
-export function Diagnostics({ runtime }: { runtime: RendererRuntime }) {
+export function Diagnostics({
+  runtime,
+  expanded = false,
+}: {
+  runtime: RendererRuntime;
+  expanded?: boolean;
+}) {
   const scene = useSyncExternalStore(
     runtime.store.subscribe,
     runtime.store.getSnapshot,
@@ -32,7 +38,7 @@ export function Diagnostics({ runtime }: { runtime: RendererRuntime }) {
   const result = (value: ApplyResult | undefined) =>
     setError(value?.status === 'rejected' ? value.message : '');
   return (
-    <details className="developer-tools">
+    <details className="developer-tools" open={expanded || undefined}>
       <summary>Developer tools</summary>
       <p className="muted">Development fixtures and request diagnostics.</p>
       <details>

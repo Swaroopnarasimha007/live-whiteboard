@@ -5,11 +5,23 @@ All commands below start here unless noted otherwise.
 
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
 
+Skip to the section you’re interested in:
+
+1. [Architecture diagram](#architecture)
+2. [Demo video](#demo-video)
+3. [Run it yourself](#run-it-yourself)
+
 ## Architecture
 
 ![AI Whiteboard architecture: React and FastAPI exchange PCM audio and transcripts over WebSocket, send generation requests as JSON, and stream diagram events as NDJSON. Whisper runs locally, Groq generates diagram operations, and the browser renders and saves the drawing.](docs/architecture.svg)
 
-## Run with Docker
+## Demo video
+
+Demo video coming soon.
+
+## Run it yourself
+
+### Run with Docker
 
 Install Git and Docker Desktop (Linux containers on Windows), or Docker Engine
 with the Compose plugin on Linux.

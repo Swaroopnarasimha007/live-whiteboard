@@ -5,6 +5,10 @@ All commands below start here unless noted otherwise.
 
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
 
+## Architecture
+
+![AI Whiteboard architecture: React and FastAPI exchange PCM audio and transcripts over WebSocket, send generation requests as JSON, and stream diagram events as NDJSON. Whisper runs locally, Groq generates diagram operations, and the browser renders and saves the drawing.](docs/architecture.svg)
+
 ## Run with Docker
 
 Install Git and Docker Desktop (Linux containers on Windows), or Docker Engine

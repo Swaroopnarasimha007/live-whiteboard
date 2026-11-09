@@ -1,7 +1,7 @@
 # AI Whiteboard
 
-The application lives in `ai_whiteboard/`, with a React frontend and Python backend.
-All commands below start here unless noted otherwise.
+AI Whiteboard turns spoken explanations into editable diagrams. Hold to talk,
+then release to draw. You can also add and edit shapes manually.
 
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
 
@@ -21,14 +21,12 @@ Demo video coming soon.
 
 ## Run it yourself
 
-### Run with Docker
-
-Install Git and Docker Desktop (Linux containers on Windows), or Docker Engine
-with the Compose plugin on Linux.
+Install Git, then clone the repository. The `frontend/` and `backend/` folders
+are at the repository root.
 
 ```sh
-git clone --branch release/v2 https://github.com/Swaroopnarasimha007/live-whiteboard.git
-cd live-whiteboard/ai_whiteboard
+git clone https://github.com/Swaroopnarasimha007/live-whiteboard.git
+cd live-whiteboard
 cp .env.example .env
 ```
 
@@ -39,18 +37,23 @@ MODE=groq
 API_KEY=your-groq-api-key
 ```
 
-Then start both servers:
+Use a valid Groq key for the default setup, or [try the mock demo](#mock-demo-without-keys-or-model-downloads).
+
+### Run with Docker
+
+Install Docker Desktop (Linux containers on Windows), or Docker Engine with the
+Compose plugin on Linux. From the repository root, run:
 
 ```sh
 docker compose up --build -d
-docker compose logs -f
 ```
 
-Open **http://localhost:5173** once the backend is ready. On first startup,
-`model-init` downloads Whisper Small into a persistent Docker volume. This needs
-internet and disk space and may take a few minutes. Later starts reuse the model.
-Allow microphone access and use **Hold to talk**; release to draw. Groq requires
-a valid key and may charge for requests.
+On first startup, `model-init` downloads Whisper Small into a persistent Docker
+volume. The backend waits for that step to succeed. If startup stalls or fails,
+check `docker compose logs model-init backend`. Later starts reuse the model.
+
+Open [the whiteboard](http://localhost:5173) once the services are ready. Select
+**Start session**, allow microphone access when prompted, and use **Hold to talk**.
 
 ```sh
 docker compose ps
@@ -62,7 +65,88 @@ After changing source code, run `docker compose up --build -d`.
 `docker compose down -v` also deletes downloaded models. Browser autosave is
 independent of Docker. Backend readiness: http://localhost:8000/health/ready.
 
-## Simple settings first
+### Run without Docker
+
+Install **Python 3.10+**, **Node.js 22** (22.17.1 or newer within the 22 series),
+and **npm 10**. Configure `.env` as above. Use separate terminals for both servers.
+
+#### Backend on Windows (PowerShell)
+
+From the repository root:
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[speech]"
+python -m app
+```
+
+If PowerShell blocks activation, run the virtual environment interpreter directly:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[speech]"
+.\.venv\Scripts\python.exe -m app
+```
+
+#### Backend on macOS or Linux
+
+From the repository root:
+
+```sh
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[speech]"
+python -m app
+```
+
+#### Locked backend dependencies (optional)
+
+As an alternative to the pip setup on either platform, install `uv` and run from `backend/`:
+
+```sh
+uv sync --frozen --no-dev --extra speech
+uv run --no-sync python -m app
+```
+
+On either platform, starting the backend downloads the configured Whisper model
+if it is missing. If the download fails, the backend still starts and reports
+speech as unavailable. To download it separately, run `python -m scripts.models.ensure`
+from `backend/` with the virtual environment active, or prefix the command with
+`uv run --no-sync` if you used uv.
+
+#### Frontend in a second terminal
+
+From the repository root:
+
+```sh
+cd frontend
+npm ci
+npm run dev
+```
+
+Open **http://localhost:5173**. Vite proxies API and microphone WebSocket traffic
+to 127.0.0.1:8000. Keep both ports available. Stop either server with Ctrl+C.
+If you change the backend port, update the Vite/Nginx/Compose routing too.
+The backend uses one worker because session state lives in memory.
+
+### Mock demo without keys or model downloads
+
+For the fastest preview, run just the [frontend](#frontend-in-a-second-terminal)
+and select **Start demo** on the empty board. This uses built-in fixtures and
+works without a backend, microphone, API key, or model download.
+
+To try the full client and server in mock mode, set `MODE=mock` and `API_KEY=`
+in `.env`, set `speech_profile: mock` in `backend/config/settings.yaml`, and
+start both services. Use the backend input mode for this setup.
+
+For a local mock backend, `python -m pip install -e .` is enough; speech extras
+are only needed for real transcription.
+
+### Configure the backend
 
 Both files load automatically:
 
@@ -96,89 +180,7 @@ full-format YAML remains supported through `WHITEBOARD_CONFIG`; relative paths
 resolve from `backend`, with an advanced sibling loaded first when present.
 These advanced environment variables do not belong in the two-variable `.env`.
 
-## Run without Docker
-
-Install **Python 3.10+**, **Node.js 22** (22.17.1 or newer within the 22 series),
-and **npm 10**. Configure `.env` as above. Use separate terminals for both servers.
-
-### Backend — Windows PowerShell
-
-From `ai_whiteboard`:
-
-```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -e ".[speech]"
-python -m app
-```
-
-On first startup, the backend automatically downloads the selected Whisper model
-if it is missing. This needs internet access and may take a few minutes; later
-starts reuse it. If download fails, the board backend still starts and reports
-speech as unavailable until the model can be installed. Run
-`python -m scripts.models.ensure` first only if you want to download the model
-before launching the server.
-
-If PowerShell blocks activation, run the virtual environment interpreter directly:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -e ".[speech]"
-.\.venv\Scripts\python.exe -m app
-```
-
-### Backend — macOS / Linux
-
-```sh
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[speech]"
-python -m app
-```
-
-The initializer downloads only when the selected default model is missing.
-For exact locked dependencies, install `uv`, then run from `backend`:
-
-```sh
-uv sync --frozen --no-dev --extra speech
-uv run --no-sync python -m app
-```
-
-The first `python -m app` startup downloads the configured Whisper model when it
-is missing. If the download cannot complete, the board still starts with speech
-unavailable. To pre-download it, run `python -m scripts.models.ensure` (or
-`uv run --no-sync python -m scripts.models.ensure`) before starting the server.
-
-### Frontend — second terminal
-
-From `ai_whiteboard`:
-
-```sh
-cd frontend
-npm ci
-npm run dev
-```
-
-Open **http://localhost:5173**. Vite proxies API and microphone WebSocket traffic
-to 127.0.0.1:8000. Keep both ports available. Stop either server with Ctrl+C.
-If you change the backend port, update the Vite/Nginx/Compose routing too.
-The backend uses one worker because session state lives in memory.
-
-## Mock demo without keys or model downloads
-
-Set `.env` to `MODE=mock` and `API_KEY=`. Set `speech_profile: mock` in
-`backend/config/settings.yaml`, then start normally. No model is downloaded.
-The UI also has a built-in **Start demo**. A backend configured for Whisper
-tries to install the model at startup; if that is unavailable, the backend still
-starts and reports speech as unavailable until setup succeeds.
-
-For a local mock backend, `python -m pip install -e .` is enough; speech extras
-are only needed for real transcription.
-
-## Other speech models
+### Other speech models
 
 Change `speech_profile` to `whisper-medium`, then run the initializer again
 locally or recreate the Docker services. To install a non-default profile
@@ -220,4 +222,3 @@ npm run test:backend-contracts
 ```
 
 Browser tests additionally require `npx playwright install chromium`.
-Historical notes under `docs/` refer to earlier layouts; follow this README for current paths.

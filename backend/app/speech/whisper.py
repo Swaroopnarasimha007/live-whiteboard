@@ -17,9 +17,8 @@ class WhisperEngine:
         self.rate = config.format.sampleRateHz
         if config.holdStreaming:
             endpointing = endpointing.model_copy(update={
-                "target_chunk_ms": min(endpointing.target_chunk_ms, 1500),
-                "max_segment_ms": min(endpointing.max_segment_ms, 6000),
-                "silence_ms": min(endpointing.silence_ms, 450),
+                "target_chunk_ms": endpointing.hold_streaming_pause_ms,
+                "silence_ms": endpointing.hold_streaming_pause_ms,
             })
         self.maximum = endpointing.max_segment_ms * self.rate // 1000
         self.target = endpointing.target_chunk_ms * self.rate // 1000
@@ -39,6 +38,8 @@ class WhisperEngine:
         self.lookback = b""
         self.committed = self.sequence = 0
         self.next_check = self.target
+        self.pending_text = []
+        self.pending_start = 0
 
     def audio(self, data):
         return self.np.frombuffer(data, dtype="<i2").astype(self.np.float32) / 32768.0
@@ -58,16 +59,25 @@ class WhisperEngine:
             ),
             None,
         )
-        if cut is None and samples >= self.maximum:
-            cut = self.maximum
         if cut is not None:
             return self.commit(min(cut, self.maximum))
+        if self.config.holdStreaming and not speech and samples >= self.silence:
+            return self.commit(min(samples, self.maximum))
+        if samples >= self.maximum:
+            # Keep inference windows bounded, but send to generation only at a
+            # confirmed pause or release in hold-streaming mode.
+            if self.config.holdStreaming:
+                if not speech:
+                    self.next_check = samples + self.rate // 10
+                    return []
+                return self.commit(min(speech[-1]["end"], self.maximum), emit=False)
+            return self.commit(self.maximum)
         self.next_check = min(samples + self.rate // 2, self.maximum)
         return []
 
-    def commit(self, count):
+    def commit(self, count, *, emit=True):
         if not count:
-            return []
+            return self.flush_pending() if emit else []
         started = time.monotonic()
         owned = bytes(self.buffer[: count * 2])
         audio = self.audio(self.lookback + owned)
@@ -107,6 +117,12 @@ class WhisperEngine:
             characters=len(text),
             elapsed_ms=round((time.monotonic() - started) * 1000),
         )
+        if self.config.holdStreaming:
+            if text:
+                if not self.pending_text:
+                    self.pending_start = start
+                self.pending_text.append(text)
+            return self.flush_pending() if emit else []
         if not text:
             return []
         return [
@@ -122,10 +138,29 @@ class WhisperEngine:
             )
         ]
 
+    def flush_pending(self):
+        if not self.pending_text:
+            return []
+        text = " ".join(self.pending_text)
+        self.pending_text.clear()
+        return [
+            TranscriptEvent(
+                type="transcript",
+                streamId=self.config.streamId,
+                sessionEpoch=self.config.sessionEpoch,
+                id=f"{self.config.streamId}_{self.sequence}",
+                text=text,
+                startMs=self.pending_start * 1000 / self.rate,
+                endMs=self.committed * 1000 / self.rate,
+                isFinal=True,
+            )
+        ]
+
     def finish(self):
         return self.commit(len(self.buffer) // 2)
 
     def close(self):
         self.buffer.clear()
+        self.pending_text.clear()
         self.lookback = b""
         self.resource = None

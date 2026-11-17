@@ -95,6 +95,7 @@ class Endpointing(ConfigModel):
     max_segment_ms: Annotated[int, Field(ge=1000, le=30000)] = 15000
     target_chunk_ms: Positive = 8000
     silence_ms: Positive = 600
+    hold_streaming_pause_ms: Annotated[int, Field(ge=200, le=10000)] = 2000
     context_ms: Annotated[int, Field(ge=0, le=2000)] = 500
 
     @model_validator(mode="after")

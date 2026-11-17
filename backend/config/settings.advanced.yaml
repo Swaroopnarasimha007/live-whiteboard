@@ -39,6 +39,8 @@ transcription:
     max_segment_ms: 15000
     target_chunk_ms: 8000
     silence_ms: 600
+    # Hold-streaming sends accumulated speech after this much silence (milliseconds).
+    hold_streaming_pause_ms: 2000
     context_ms: 500
   model_cache:
     max_loaded_models: 2

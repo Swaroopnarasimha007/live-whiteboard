@@ -11,7 +11,7 @@ from app.contracts.audio import SpeechStreamConfig
 from app.speech.whisper import WhisperEngine
 
 
-def engine(vad=None, hold_streaming=False):
+def engine(vad=None, hold_streaming=False, pause_ms=2000):
     calls = []
 
     def transcribe(audio, **options):
@@ -24,6 +24,7 @@ def engine(vad=None, hold_streaming=False):
 
     resource = SimpleNamespace(model=SimpleNamespace(transcribe=transcribe), lock=Lock())
     settings = Settings().transcription.endpointing
+    settings.hold_streaming_pause_ms = pause_ms
     config = SpeechStreamConfig(
         streamId="hold1", sessionEpoch=4, profile="whisper-small", holdStreaming=hold_streaming
     )
@@ -84,31 +85,62 @@ def test_cancellation_discards_only_uncommitted_audio():
     assert calls == []
 
 
-def test_streaming_hold_finalizes_short_pause_before_release():
-    def vad(audio):
-        voiced = np.flatnonzero(audio)
-        return [{"start": int(voiced[0]), "end": int(voiced[-1]) + 1}] if len(voiced) else []
 
-    speech, calls = engine(vad, hold_streaming=True)
-    events = []
+def trailing_speech(audio):
+    voiced = np.flatnonzero(audio)
+    return [{"start": int(voiced[0]), "end": int(voiced[-1]) + 1}] if len(voiced) else []
+
+
+def test_streaming_hold_waits_for_two_second_pause():
+    speech, calls = engine(trailing_speech, hold_streaming=True)
     for _ in range(20):
-        events.extend(speech.push(FRAME))
-    for _ in range(10):
-        events.extend(speech.push(bytes(3200)))
+        assert speech.push(FRAME) == []
+    for _ in range(19):
+        assert speech.push(bytes(3200)) == []
+    events = speech.push(bytes(3200))
     assert len(events) == 1
     assert events[0].isFinal
-    assert events[0].endMs < 3000
+    assert events[0].endMs == 4000
     assert len(calls) == 1
     assert speech.finish() == []
 
 
-def test_streaming_hold_bounds_continuous_speech_without_pauses():
+def test_streaming_hold_keeps_continuous_text_until_pause_or_release():
     speech, calls = engine(hold_streaming=True)
-    events = []
-    for _ in range(65):
-        events.extend(speech.push(FRAME))
+    for _ in range(160):
+        assert speech.push(FRAME) == []
+    assert len(calls) == 1  # Internal transcription window never sends to generation.
+    events = speech.finish()
     assert len(events) == 1
-    assert events[0].endMs == 6000
-    assert len(calls) == 1
-    events.extend(speech.finish())
-    assert events[-1].endMs == 6500
+    assert events[0].startMs == 0
+    assert events[0].endMs == 16000
+    assert events[0].text == "old new new"
+
+
+def test_streaming_hold_pause_across_inference_window_sends_all_text():
+    speech, _ = engine(trailing_speech, hold_streaming=True)
+    for _ in range(140):
+        assert speech.push(FRAME) == []
+    events = []
+    for _ in range(20):
+        events.extend(speech.push(bytes(3200)))
+    assert len(events) == 1
+    assert events[0].endMs == 16000
+    assert speech.finish() == []
+
+
+def test_streaming_hold_pause_is_configurable():
+    speech, _ = engine(trailing_speech, hold_streaming=True, pause_ms=1000)
+    for _ in range(10):
+        assert speech.push(FRAME) == []
+    for _ in range(9):
+        assert speech.push(bytes(3200)) == []
+    assert len(speech.push(bytes(3200))) == 1
+
+
+def test_streaming_hold_cancel_discards_accumulated_text():
+    speech, _ = engine(hold_streaming=True)
+    for _ in range(150):
+        assert speech.push(FRAME) == []
+    speech.close()
+    assert speech.finish() == []

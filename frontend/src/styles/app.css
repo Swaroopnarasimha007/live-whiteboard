@@ -904,10 +904,7 @@ p {
   --neu-inset: inset 0 2px 8px rgb(0 0 0 / 20%);
   --neu-control-edge: var(--glass-border);
   --neu-control-hover: rgb(255 255 255 / 55%);
-  background:
-    radial-gradient(ellipse at 12% 0%, #78907455, transparent 48%),
-    radial-gradient(ellipse at 95% 90%, #99876a33, transparent 55%),
-    linear-gradient(145deg, #263c30, #17271f 55%, #292b23);
+  background: radial-gradient(ellipse at 50% 0%, #33363b 0%, #17181b 48%, #09090b 100%);
   color: #ffffff;
   text-shadow: 0 1px 2px rgb(0 0 0 / 25%);
 }
@@ -968,7 +965,7 @@ p {
   .whiteboard-app[data-theme='dark'] .tool-rail,
   .whiteboard-app[data-theme='dark'] .board-panel,
   .whiteboard-app[data-theme='dark'] button {
-    background: #24362b;
+    background: #202124;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -1059,19 +1056,19 @@ p {
   }
 }
 
-/* Frosted botanical glass for dark mode. */
+/* Monochrome glass: only dark mode overrides the palette. */
 .whiteboard-app[data-theme='dark'] {
-  --glass-fill: rgb(219 229 206 / 8%);
-  --glass-border: rgb(213 227 198 / 21%);
-  --neu-blue: #465e48;
-  --neu-pink: #625d48;
-  --neu-accent: #d3e5be;
-  --neu-heading: #f1f3e9;
-  --neu-text: #c1ccbd;
+  --glass-fill: rgb(255 255 255 / 6%);
+  --glass-border: rgb(255 255 255 / 12%);
+  --neu-blue: #3a3c40;
+  --neu-pink: #3a3c40;
+  --neu-accent: #f5f5f7;
+  --neu-heading: #f5f5f7;
+  --neu-text: #c5c5ca;
 }
 .whiteboard-app[data-theme='dark'] .brand-mark,
 .whiteboard-app[data-theme='dark'] .empty-content > svg {
-  background: linear-gradient(145deg, #6f8667, #384d3a);
+  background: linear-gradient(145deg, #505258, #292a2f);
   color: #f5f5f7;
   box-shadow:
     inset 0 1px 0 #ffffff26,
@@ -1086,7 +1083,7 @@ p {
   box-shadow: none;
 }
 .whiteboard-app[data-theme='dark'] select option {
-  background: #24362b;
+  background: #242428;
   color: #f5f5f7;
 }
 /* Consistent panel hierarchy and comfortable reading measure. */
@@ -1249,55 +1246,4 @@ p {
 }
 .panel-section-body [hidden] {
   display: none;
-}
-
-/* Soft highlights add depth without changing control dimensions. */
-.whiteboard-app[data-theme='dark'] .tool-rail,
-.whiteboard-app[data-theme='dark'] .board-panel,
-.whiteboard-app[data-theme='dark'] .board-notice,
-.whiteboard-app[data-theme='dark'] .pan-menu > div {
-  background: linear-gradient(145deg, rgb(230 238 215 / 12%), rgb(185 204 167 / 5%));
-  box-shadow:
-    inset 0 1px 0 rgb(244 247 227 / 14%),
-    0 8px 28px rgb(10 22 15 / 16%);
-  border-radius: 24px;
-}
-.whiteboard-app[data-theme='dark'] .board-region {
-  border-color: rgb(213 227 198 / 22%);
-  border-radius: 24px;
-  box-shadow:
-    inset 0 1px 0 rgb(244 247 227 / 10%),
-    0 6px 24px rgb(10 22 15 / 12%);
-}
-.whiteboard-app[data-theme='dark'] button {
-  border-radius: 18px;
-  background: linear-gradient(150deg, rgb(230 238 215 / 14%), rgb(185 204 167 / 6%));
-  box-shadow:
-    inset 0 1px 0 rgb(244 247 227 / 12%),
-    0 3px 10px rgb(10 22 15 / 10%);
-}
-.whiteboard-app[data-theme='dark'] button:hover:enabled {
-  background: rgb(211 229 190 / 20%);
-}
-.whiteboard-app[data-theme='dark'] button[aria-pressed='true'],
-.whiteboard-app[data-theme='dark'] button[aria-selected='true'] {
-  background: rgb(185 211 161 / 22%);
-  border-color: #b9d3a1;
-}
-.whiteboard-app[data-theme='dark'] input:not([type='checkbox']),
-.whiteboard-app[data-theme='dark'] select,
-.whiteboard-app[data-theme='dark'] textarea {
-  background: rgb(12 29 19 / 28%);
-  border-radius: 16px;
-}
-@media (prefers-reduced-transparency: reduce) {
-  .whiteboard-app[data-theme='dark'] .tool-rail,
-  .whiteboard-app[data-theme='dark'] .board-panel,
-  .whiteboard-app[data-theme='dark'] .board-notice,
-  .whiteboard-app[data-theme='dark'] .pan-menu > div,
-  .whiteboard-app[data-theme='dark'] button {
-    background: #24362b;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
 }

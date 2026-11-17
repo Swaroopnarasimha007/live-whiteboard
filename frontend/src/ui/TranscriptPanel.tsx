@@ -14,6 +14,20 @@ export function TranscriptPanel({
     runtime.session.getSnapshot,
     runtime.session.getSnapshot,
   );
+  const rateLimited = state.lastResult?.diagnostics.some((entry) => entry.code === 'rate_limited');
+  const statusLabels = {
+    queued:
+      state.generation === 'paused'
+        ? 'Waiting to resume'
+        : state.inFlight
+          ? 'Waiting for current generation'
+          : rateLimited
+            ? 'Waiting for API rate limit to reset'
+            : 'Waiting to generate',
+    sent: 'Generating diagram',
+    completed: 'Drawn',
+    failed: 'Not drawn yet',
+  };
   return (
     <section className="transcript-pane" aria-label="Transcript">
       <h2>
@@ -45,7 +59,7 @@ export function TranscriptPanel({
             <li key={event.id}>
               <p>{event.text}</p>
               <small>
-                Final · {event.status} · {(event.startMs / 1000).toFixed(1)}–
+                Final · {statusLabels[event.status]} · {(event.startMs / 1000).toFixed(1)}–
                 {(event.endMs / 1000).toFixed(1)} s
               </small>
             </li>

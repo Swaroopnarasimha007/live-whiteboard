@@ -29,7 +29,7 @@ requires = ["hatchling==1.33.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["app"]
+packages = ["app", "scripts"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "app"]

@@ -1,38 +1,25 @@
+## Index
+
+Skip to your preferred section below.
+
+1. [Demo video](#demo-video)
+2. [Architecture diagram](#architecture-diagram)
+3. [Run it yourself](#run-it-yourself)
+
 # AI Whiteboard
 
 AI Whiteboard turns spoken explanations into editable diagrams. Hold to talk,
 then release to draw. You can also add and edit shapes manually.
 
-Choose **Hold-streaming — draw while speaking** in the input mode selector to
-update the diagram during a hold. A two-second pause sends the accumulated speech
-for generation. Each request uses the current board
-so later details can refine existing generated objects. Release sends the final
-audio segment. Transcription and provider response times affect when updates appear.
-Change `transcription.endpointing.hold_streaming_pause_ms` in
-`backend/config/settings.advanced.yaml` to adjust the pause (`2000` = two seconds),
-then restart the backend.
-
-If the diagram provider rate-limits a request, speech stays queued during a cooldown.
-The app honors the provider's retry delay. When none is supplied, it waits 10 seconds,
-then increases the wait on repeated failures up to two minutes. After the cooldown,
-queued speech is sent with fresh board context. Stop pauses automatic retries;
-Reset clears the queue.
-
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
-
-Skip to the section you’re interested in:
-
-1. [Architecture diagram](#architecture)
-2. [Demo video](#demo-video)
-3. [Run it yourself](#run-it-yourself)
-
-## Architecture
-
-![AI Whiteboard architecture: React and FastAPI exchange PCM audio and transcripts over WebSocket, send generation requests as JSON, and stream diagram events as NDJSON. Whisper runs locally, Groq generates diagram operations, and the browser renders and saves the drawing.](docs/architecture.svg)
 
 ## Demo video
 
-Demo video coming soon.
+https://github.com/user-attachments/assets/0fdfc039-af39-4b2d-be29-3fdb65bed248
+
+## Architecture diagram
+
+![AI Whiteboard architecture: React and FastAPI exchange PCM audio and transcripts over WebSocket, send generation requests as JSON, and stream diagram events as NDJSON. Whisper runs locally, Groq generates diagram operations, and the browser renders and saves the drawing.](docs/architecture.svg)
 
 ## Run it yourself
 
@@ -160,6 +147,23 @@ start both services. Use the backend input mode for this setup.
 
 For a local mock backend, `python -m pip install -e .` is enough; speech extras
 are only needed for real transcription.
+
+### Hold-streaming mode
+
+Choose **Hold-streaming — draw while speaking** in the input mode selector to
+update the diagram during a hold. A two-second pause sends the accumulated speech
+for generation. Each request uses the current board
+so later details can refine existing generated objects. Release sends the final
+audio segment. Transcription and provider response times affect when updates appear.
+Change `transcription.endpointing.hold_streaming_pause_ms` in
+`backend/config/settings.advanced.yaml` to adjust the pause (`2000` = two seconds),
+then restart the backend.
+
+If the diagram provider rate-limits a request, speech stays queued during a cooldown.
+The app honors the provider's retry delay. When none is supplied, it waits 10 seconds,
+then increases the wait on repeated failures up to two minutes. After the cooldown,
+queued speech is sent with fresh board context. Stop pauses automatic retries;
+Reset clears the queue.
 
 ### Configure the backend
 

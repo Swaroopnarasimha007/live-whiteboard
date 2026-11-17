@@ -1,3 +1,4 @@
+import { isBackendMode } from '../session';
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from 'react';
 import {
   Moon,
@@ -170,11 +171,12 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
             >
               <option value="mock">Mock demo — no microphone</option>
               <option value="backend">Whisper — hold to talk</option>
+              <option value="hold-streaming">Hold-streaming — draw while speaking</option>
             </select>
           </label>
           <div className="session-actions" role="group" aria-label="Session controls">
-            {mode === 'backend' ? (
-              <HoldToTalk session={runtime.session} />
+            {isBackendMode(mode) ? (
+              <HoldToTalk session={runtime.session} mode={mode as 'backend' | 'hold-streaming'} />
             ) : (
               <>
                 {session.capture === 'paused' ? (
@@ -284,7 +286,7 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
           <span className="status-disclaimer">
             {mode === 'microphone'
               ? 'Local recording — transcription mocked'
-              : mode === 'backend'
+              : isBackendMode(mode)
                 ? 'Live backend transcription and streamed drawing'
                 : 'Transcript and generation are mocked'}
           </span>

@@ -1,7 +1,8 @@
+import { isBackendMode } from '../session';
 import type { SessionSnapshot } from '../session';
 import type { StreamSnapshot } from '../stream';
 export function captureLabel(state: SessionSnapshot) {
-  if (state.mode === 'backend') {
+  if (isBackendMode(state.mode)) {
     if (state.transcribingAudio)
       return state.holdActive
         ? 'Listening · transcribing earlier audio'

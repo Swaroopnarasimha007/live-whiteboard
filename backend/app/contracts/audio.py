@@ -12,6 +12,7 @@ class AudioFormat(Contract):
 
 
 class AudioStart(Contract):
+    holdStreaming: bool = False
     type: Literal["start"]
     audioProtocolVersion: Literal[1]
     streamId: Id
@@ -81,6 +82,7 @@ audio_event_adapter = TypeAdapter(AudioServerEvent)
 
 
 class SpeechStreamConfig(Contract):
+    holdStreaming: bool = False
     streamId: Id
     sessionEpoch: Counter
     profile: Id

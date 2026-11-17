@@ -28,6 +28,11 @@
   },
   "additionalProperties": false,
   "properties": {
+    "holdStreaming": {
+      "default": false,
+      "title": "Holdstreaming",
+      "type": "boolean"
+    },
     "type": {
       "const": "start",
       "title": "Type",

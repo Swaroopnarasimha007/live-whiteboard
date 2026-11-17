@@ -15,6 +15,12 @@ class WhisperEngine:
         self.config, self.resource, self.language = config, resource, language
         self.progress = progress or (lambda stage: None)
         self.rate = config.format.sampleRateHz
+        if config.holdStreaming:
+            endpointing = endpointing.model_copy(update={
+                "target_chunk_ms": min(endpointing.target_chunk_ms, 1500),
+                "max_segment_ms": min(endpointing.max_segment_ms, 6000),
+                "silence_ms": min(endpointing.silence_ms, 450),
+            })
         self.maximum = endpointing.max_segment_ms * self.rate // 1000
         self.target = endpointing.target_chunk_ms * self.rate // 1000
         self.silence = endpointing.silence_ms * self.rate // 1000

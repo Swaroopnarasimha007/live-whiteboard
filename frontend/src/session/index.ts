@@ -1,5 +1,6 @@
 export {
   createSessionController,
+  isBackendMode,
   type SessionController,
   type SessionOptions,
   type SessionSnapshot,

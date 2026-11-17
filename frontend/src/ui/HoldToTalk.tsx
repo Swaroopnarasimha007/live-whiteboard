@@ -1,7 +1,13 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import type { SessionController } from '../session/controller';
 
-export function HoldToTalk({ session }: { session: SessionController }) {
+export function HoldToTalk({
+  session,
+  mode = 'backend',
+}: {
+  session: SessionController;
+  mode?: 'backend' | 'hold-streaming';
+}) {
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot, session.getSnapshot);
   const pressed = useRef(false);
   const release = () => {
@@ -43,7 +49,7 @@ export function HoldToTalk({ session }: { session: SessionController }) {
   const begin = () => {
     if (pressed.current || state.capture === 'finishing') return;
     pressed.current = true;
-    void session.beginHold();
+    void session.beginHold(mode);
   };
   return (
     <button
@@ -51,7 +57,11 @@ export function HoldToTalk({ session }: { session: SessionController }) {
       aria-label="Hold to talk"
       aria-pressed={state.holdActive}
       disabled={state.capture === 'finishing'}
-      title="Hold to record; release to draw. Escape cancels unsent audio."
+      title={
+        mode === 'hold-streaming'
+          ? 'Hold to talk. Pauses send speech segments to update the board while you speak. Release finishes the last segment.'
+          : 'Hold to record; release to draw. Escape cancels unsent audio.'
+      }
       style={{ touchAction: 'none', userSelect: 'none' }}
       onPointerDown={(event) => {
         if (event.button !== 0) return;

@@ -1,3 +1,4 @@
+import { isBackendMode } from '../session';
 import { ProfilePicker } from '../session/backend/ProfilePicker';
 import { useSyncExternalStore } from 'react';
 import type { RendererRuntime } from '../app/rendererRuntime';
@@ -16,11 +17,13 @@ export function SessionDetails({ runtime, mode }: { runtime: RendererRuntime; mo
       <p className="muted">
         {mode === 'mock'
           ? 'Mock demo · no microphone needed'
-          : mode === 'backend'
-            ? 'Whisper · hold to talk, release to draw'
-            : 'Local recording — transcription mocked'}
+          : mode === 'hold-streaming'
+            ? 'Whisper · pauses update the board while you speak'
+            : isBackendMode(mode)
+              ? 'Whisper · hold to talk, release to draw'
+              : 'Local recording — transcription mocked'}
       </p>
-      {mode === 'backend' && (
+      {isBackendMode(mode) && (
         <ProfilePicker
           bridge={runtime.backend}
           disabled={
@@ -51,9 +54,9 @@ export function SessionDetails({ runtime, mode }: { runtime: RendererRuntime; mo
           onClick={session.retry}
           title="Retry the original request; keep accepted drawing"
         >
-          {mode === 'backend' ? 'Replay retained request' : 'Retry request'}
+          {isBackendMode(mode) ? 'Replay retained request' : 'Retry request'}
         </button>
-        {mode === 'backend' && (
+        {isBackendMode(mode) && (
           <button disabled={!state.canRetry || state.inFlight} onClick={session.continueFresh}>
             Continue with fresh context
           </button>

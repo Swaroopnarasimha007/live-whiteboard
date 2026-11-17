@@ -67,6 +67,7 @@ export class BackendSessionBridge {
   private retirement: Promise<void> = Promise.resolve();
   private version = 0;
   private disposed = false;
+  private holdStreaming = false;
   constructor(options: BackendBridgeOptions = {}) {
     this.baseUrl = (
       options.baseUrl ??
@@ -101,6 +102,7 @@ export class BackendSessionBridge {
           url: `${this.baseUrl.replace(/^http/, 'ws')}/api/v1/sessions/${encodeURIComponent(current.sessionId)}/audio`,
           sessionEpoch: current.sessionEpoch,
           profile: current.profile,
+          holdStreaming: this.holdStreaming,
         };
       },
       ...(options.audioEnvironment ? { environment: options.audioEnvironment } : {}),
@@ -110,6 +112,9 @@ export class BackendSessionBridge {
           message: error.message,
         }),
     });
+  }
+  setHoldStreaming(enabled: boolean) {
+    this.holdStreaming = enabled;
   }
   getSnapshot = () => this.state;
   subscribe = (listener: () => void) => {

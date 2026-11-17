@@ -41,6 +41,7 @@ export const audioServerEventSchema = z.discriminatedUnion('type', [
 ]);
 export type AudioServerEvent = z.infer<typeof audioServerEventSchema>;
 export interface AudioSessionConfig {
+  holdStreaming?: boolean;
   url: string;
   sessionEpoch: number;
   profile: string;

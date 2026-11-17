@@ -11,7 +11,7 @@ from app.contracts.audio import SpeechStreamConfig
 from app.speech.whisper import WhisperEngine
 
 
-def engine(vad=None):
+def engine(vad=None, hold_streaming=False):
     calls = []
 
     def transcribe(audio, **options):
@@ -24,7 +24,9 @@ def engine(vad=None):
 
     resource = SimpleNamespace(model=SimpleNamespace(transcribe=transcribe), lock=Lock())
     settings = Settings().transcription.endpointing
-    config = SpeechStreamConfig(streamId="hold1", sessionEpoch=4, profile="whisper-small")
+    config = SpeechStreamConfig(
+        streamId="hold1", sessionEpoch=4, profile="whisper-small", holdStreaming=hold_streaming
+    )
     vad = vad or (lambda audio: [{"start": 0, "end": len(audio)}] if np.any(audio) else [])
     return WhisperEngine(config, resource, "en", settings, vad=vad), calls
 
@@ -80,3 +82,33 @@ def test_cancellation_discards_only_uncommitted_audio():
     speech.close()
     assert speech.finish() == []
     assert calls == []
+
+
+def test_streaming_hold_finalizes_short_pause_before_release():
+    def vad(audio):
+        voiced = np.flatnonzero(audio)
+        return [{"start": int(voiced[0]), "end": int(voiced[-1]) + 1}] if len(voiced) else []
+
+    speech, calls = engine(vad, hold_streaming=True)
+    events = []
+    for _ in range(20):
+        events.extend(speech.push(FRAME))
+    for _ in range(10):
+        events.extend(speech.push(bytes(3200)))
+    assert len(events) == 1
+    assert events[0].isFinal
+    assert events[0].endMs < 3000
+    assert len(calls) == 1
+    assert speech.finish() == []
+
+
+def test_streaming_hold_bounds_continuous_speech_without_pauses():
+    speech, calls = engine(hold_streaming=True)
+    events = []
+    for _ in range(65):
+        events.extend(speech.push(FRAME))
+    assert len(events) == 1
+    assert events[0].endMs == 6000
+    assert len(calls) == 1
+    events.extend(speech.finish())
+    assert events[-1].endMs == 6500

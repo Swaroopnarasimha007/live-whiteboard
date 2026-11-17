@@ -3,6 +3,12 @@
 AI Whiteboard turns spoken explanations into editable diagrams. Hold to talk,
 then release to draw. You can also add and edit shapes manually.
 
+Choose **Hold-streaming — draw while speaking** in the input mode selector to
+update the diagram during a hold. Short pauses finalize speech segments, with
+continuous speech split at up to six seconds. Each request uses the current board
+so later details can refine existing generated objects. Release sends the final
+audio segment. Transcription and provider response times affect when updates appear.
+
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
 
 Skip to the section you’re interested in:

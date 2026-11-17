@@ -379,4 +379,106 @@ describe('backend session bridge', () => {
     expect(requests[0]!.transcript.text).toBe(tail.text);
     expect(runtime.session.getSnapshot().holdActive).toBe(false);
   });
+  it('hold-streaming sends finalized segments before release and flushes the tail', async () => {
+    const requests: GenerationRequest[] = [];
+    let nodeId = '';
+    let sectionId = '';
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/capabilities')) return json(caps);
+      if (String(url).endsWith('/generations')) {
+        const request = JSON.parse(String(init?.body)) as GenerationRequest;
+        requests.push(request);
+        const base = {
+          wireVersion: 1,
+          requestId: request.requestId,
+          sessionEpoch: request.sessionEpoch,
+        };
+        const first = requests.length === 1;
+        if (first) {
+          nodeId = request.idPrefix + 'client';
+          sectionId = request.idPrefix + 'flow';
+        }
+        const operations = first
+          ? [
+              { op: 'section.add', id: sectionId, title: 'Request flow' },
+              {
+                op: 'node.add',
+                id: nodeId,
+                section: sectionId,
+                type: 'rect',
+                label: 'Client',
+                at: [0, 0],
+              },
+            ]
+          : [{ op: 'node.update', id: nodeId, set: { label: 'Mobile client' } }];
+        return new Response(
+          [
+            { ...base, event: 'started', sequence: 1, baseRevision: request.baseRevision },
+            ...operations.map((operation, index) => ({
+              ...base,
+              event: 'operation',
+              sequence: index + 2,
+              baseRevision: request.baseRevision,
+              operation,
+            })),
+            {
+              ...base,
+              event: 'completed',
+              sequence: operations.length + 2,
+              operationCount: operations.length,
+              warningCount: 0,
+            },
+          ]
+            .map((e) => JSON.stringify(e))
+            .join('\n'),
+          { headers: { 'Content-Type': 'application/x-ndjson' } },
+        );
+      }
+      return json(identity());
+    });
+    const runtime = createRendererRuntime({ backend: { fetcher } });
+    cleanups.push(() => runtime.dispose());
+    let deliver!: Parameters<typeof runtime.backend.source.start>[0];
+    const tail = {
+      id: 'hold_tail',
+      text: 'client sends a request',
+      isFinal: true,
+      startMs: 0,
+      endMs: 5000,
+    };
+    vi.spyOn(runtime.backend.source, 'start').mockImplementation((emit, state) => {
+      deliver = emit;
+      state?.('recording');
+    });
+    vi.spyOn(runtime.backend.source, 'stop').mockImplementation(() => {});
+    const finish = vi.spyOn(runtime.backend.source, 'finish').mockImplementation(async () => {
+      deliver(tail);
+    });
+    await runtime.session.beginHold('hold-streaming');
+    deliver({ ...tail, isFinal: false, text: 'client sends a history period' });
+    expect(runtime.session.getSnapshot().transcript).toHaveLength(0);
+    expect(requests).toHaveLength(0);
+    deliver({ ...tail, id: 'sentence1', text: 'A client sends a request.' });
+    await vi.waitFor(() => expect(requests).toHaveLength(1));
+    await vi.waitFor(() => expect(runtime.session.getSnapshot().inFlight).toBe(false));
+    expect(runtime.session.getSnapshot().holdActive).toBe(true);
+    expect(runtime.session.getSnapshot().mode).toBe('hold-streaming');
+    deliver({ ...tail, id: 'sentence2', text: 'That client is a mobile app.' });
+    await vi.waitFor(() =>
+      expect(runtime.store.getSnapshot().nodes[nodeId]?.label).toBe('Mobile client'),
+    );
+    await vi.waitFor(() => expect(runtime.session.getSnapshot().inFlight).toBe(false));
+    expect(runtime.session.getSnapshot().holdActive).toBe(true);
+    await runtime.session.releaseHold();
+    await vi.waitFor(() => expect(requests).toHaveLength(3));
+    expect(finish).toHaveBeenCalledOnce();
+    expect(requests[2]!.transcript.text).toBe(tail.text);
+    expect(requests[1]!.requestId).not.toBe(requests[0]!.requestId);
+    expect(requests[1]!.board.nodes[0]).toMatchObject({ id: nodeId, label: 'Client' });
+    await vi.waitFor(() =>
+      expect(runtime.store.getSnapshot().nodes[nodeId]?.label).toBe('Mobile client'),
+    );
+    expect(Object.keys(runtime.store.getSnapshot().nodes)).toHaveLength(1);
+    expect(runtime.session.getSnapshot().holdActive).toBe(false);
+  });
 });

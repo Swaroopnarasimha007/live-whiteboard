@@ -1,3 +1,4 @@
+import { isBackendMode } from '../session';
 import { useSyncExternalStore } from 'react';
 import type { RendererRuntime } from '../app/rendererRuntime';
 import type { SessionMode } from '../session';
@@ -20,7 +21,7 @@ export function TranscriptPanel({
       </h2>
       <div className="transcript-scroll" tabIndex={0} aria-label="Transcript entries">
         <p className="muted">
-          {mode === 'backend'
+          {isBackendMode(mode)
             ? 'Audio uses the selected backend speech profile.'
             : 'Transcription is mocked in standalone modes.'}{' '}
           Only finalized audio chunks create drawing requests. Longer holds update the drawing

@@ -20,7 +20,9 @@ import { freeze } from '../stream/types';
 import { diagnostic } from '../diagnostics';
 
 export type GenerationState = 'idle' | 'queued' | 'streaming' | 'paused' | 'error';
-export type SessionMode = 'mock' | 'microphone' | 'backend';
+export type SessionMode = 'mock' | 'microphone' | 'backend' | 'hold-streaming';
+export const isBackendMode = (mode: SessionMode) => mode === 'backend' || mode === 'hold-streaming';
+
 export interface TranscriptEntry extends SpeechEvent {
   status: 'queued' | 'sent' | 'completed' | 'failed';
 }
@@ -82,7 +84,7 @@ export function createSessionController(options: SessionOptions) {
   const now = options.now ?? (() => performance.now());
   const speech = options.speech ?? new MockSpeechSource();
   const backendSpeech = options.backend?.source;
-  const currentSpeech = () => (state.mode === 'backend' ? backendSpeech! : speech);
+  const currentSpeech = () => (isBackendMode(state.mode) ? backendSpeech! : speech);
   const microphone = options.microphone ?? new MicrophonePreviewSource();
   const groupMs = options.groupDelayMs ?? 400;
   const deferredAttempts = options.deferredMaxAttempts ?? 2;
@@ -220,7 +222,7 @@ export function createSessionController(options: SessionOptions) {
         if (disposed || batch.version !== version || active !== batch) return;
         active = null;
         const incomplete = result.phase !== 'completed';
-        const nonblocking = state.mode === 'backend' && result.phase !== 'cancelled';
+        const nonblocking = isBackendMode(state.mode) && result.phase !== 'cancelled';
         if (incomplete && !nonblocking) failed = batch;
         if (nonblocking) {
           for (const event of batch.events) {
@@ -247,7 +249,7 @@ export function createSessionController(options: SessionOptions) {
                 ? 'queued'
                 : 'idle',
           message: failed
-            ? state.mode === 'backend'
+            ? isBackendMode(state.mode)
               ? 'Partial drawing retained. Replay uses the original events. Continue with fresh context creates a new request; queued speech waits.'
               : 'Partial request retained. Retry uses the original request and operation IDs; queued speech is waiting.'
             : incomplete
@@ -281,7 +283,7 @@ export function createSessionController(options: SessionOptions) {
     )
       return;
     if (options.consumer.isActive()) return;
-    if (state.mode === 'backend') {
+    if (isBackendMode(state.mode)) {
       const backend = options.backend?.getSnapshot();
       if (
         backend?.status !== 'ready' ||
@@ -306,7 +308,7 @@ export function createSessionController(options: SessionOptions) {
     let request: GenerationRequest;
     try {
       const events = continuation?.events ?? queue.map((item) => item.event);
-      if (!continuation && state.mode === 'backend') {
+      if (!continuation && isBackendMode(state.mode)) {
         for (const [id, item] of deferred) {
           if (item.attempts >= deferredAttempts || now() - item.since > deferredAge) {
             deferred.delete(id);
@@ -387,7 +389,7 @@ export function createSessionController(options: SessionOptions) {
       return false;
     }
     const event = parsed.data;
-    if (state.mode === 'backend' && !event.isFinal) return true;
+    if (isBackendMode(state.mode) && !event.isFinal) return true;
     const prior = finalized.get(event.id);
     if (prior) {
       if (!event.isFinal || JSON.stringify(prior) === JSON.stringify(event)) return true;
@@ -421,7 +423,11 @@ export function createSessionController(options: SessionOptions) {
       hiddenTranscriptCount: state.hiddenTranscriptCount + excess,
       generation: active ? 'streaming' : failed ? 'error' : blocked ? 'paused' : 'queued',
     });
-    if (active) ready = true;
+    if (state.mode === 'hold-streaming') {
+      ready = true;
+      clearTimer();
+      pump();
+    } else if (active) ready = true;
     else if (!timer && !ready && !failed && !blocked)
       timer = setTimeout(() => {
         timer = undefined;
@@ -465,16 +471,17 @@ export function createSessionController(options: SessionOptions) {
     }
     publish({
       mode,
-      ...(mode !== 'backend' && state.mode === 'backend' ? { sessionId: newId() } : {}),
+      ...(!isBackendMode(mode) && isBackendMode(state.mode) ? { sessionId: newId() } : {}),
       message: '',
       generation: failed ? 'error' : queue.length ? 'queued' : 'idle',
     });
-    if (mode === 'backend') {
+    if (isBackendMode(mode)) {
       const token = ++captureToken;
       const epoch = options.store.getSessionEpoch();
       publish({ capture: 'requesting' });
       try {
         if (!options.backend) throw new Error('Backend mode is unavailable');
+        options.backend.setHoldStreaming(mode === 'hold-streaming');
         const identity = await options.backend.ensure(epoch);
         if (disposed || token !== captureToken || epoch !== options.store.getSessionEpoch()) return;
         publish({ sessionId: identity.sessionId, epoch });
@@ -497,12 +504,12 @@ export function createSessionController(options: SessionOptions) {
       pump();
     }
   };
-  const beginHold = async () => {
+  const beginHold = async (mode: 'backend' | 'hold-streaming' = 'backend') => {
     if (disposed || state.holdActive || state.capture === 'finishing') return;
     const version = ++holdVersion;
     holdStarted = now();
     publish({ holdActive: true, holdElapsedMs: 0 });
-    await start('backend');
+    await start(mode);
     if (version !== holdVersion || !state.holdActive) return;
     if (!['recording', 'requesting'].includes(state.capture)) publish({ holdActive: false });
   };
@@ -651,7 +658,7 @@ export function createSessionController(options: SessionOptions) {
       pump(true);
     },
     continueFresh: () => {
-      if (disposed || active || !failed || state.mode !== 'backend') return;
+      if (disposed || active || !failed || !isBackendMode(state.mode)) return;
       blocked = false;
       pump(true, failed);
     },

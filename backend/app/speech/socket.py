@@ -89,13 +89,18 @@ class AudioSocketService:
             claimed = True
             config = self.settings.transcription
             stream_config = SpeechStreamConfig(
+                holdStreaming=start.holdStreaming,
                 streamId=start.streamId,
                 sessionEpoch=start.sessionEpoch,
                 profile=start.profile,
                 format=start.format,
                 maxBufferMs=config.audio.max_buffer_ms,
                 partialEmitIntervalMs=config.endpointing.partial_emit_interval_ms,
-                maxSegmentMs=config.endpointing.max_segment_ms,
+                maxSegmentMs=(
+                    min(config.endpointing.max_segment_ms, 6000)
+                    if start.holdStreaming
+                    else config.endpointing.max_segment_ms
+                ),
             )
             stream = await self.registry.open_stream(stream_config)
             current()

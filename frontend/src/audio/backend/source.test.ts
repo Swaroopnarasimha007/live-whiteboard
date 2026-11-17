@@ -127,6 +127,22 @@ function harness(extra: Partial<ConstructorParameters<typeof BackendSpeechSource
 }
 
 describe('backend PCM speech source', () => {
+  it('opts into short speech chunks only for hold-streaming', async () => {
+    const h = harness({
+      session: () => ({
+        url: 'ws://localhost:8000/audio',
+        sessionEpoch: 1,
+        profile: 'mock',
+        holdStreaming: true,
+      }),
+    });
+    const socket = await h.start();
+    expect(socket.start()).toMatchObject({ holdStreaming: true });
+    const regular = harness();
+    const regularSocket = await regular.start();
+    expect(regularSocket.start()).not.toHaveProperty('holdStreaming');
+  });
+
   it('waits for ready before capture and adapts ordered transcript revisions', async () => {
     const h = harness();
     const socket = await h.start();

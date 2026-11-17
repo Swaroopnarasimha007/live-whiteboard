@@ -248,3 +248,13 @@ test('top bar reset keeps the existing confirmation behavior', async ({ page }) 
   await reset.click();
   await expect(board(page)).toHaveAttribute('data-visible-nodes', '0');
 });
+
+test('hold-streaming is selectable and uses the hold control', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('combobox', { name: 'Input mode' }).selectOption('hold-streaming');
+  const hold = page.getByRole('button', { name: 'Hold to talk', exact: true });
+  await expect(hold).toBeVisible();
+  await expect(hold).toHaveAttribute('title', /Pauses send speech segments/);
+  await page.getByRole('combobox', { name: 'Input mode' }).selectOption('backend');
+  await expect(hold).toHaveAttribute('title', /release to draw/);
+});

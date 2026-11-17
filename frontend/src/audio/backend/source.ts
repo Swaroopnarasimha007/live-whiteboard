@@ -194,6 +194,7 @@ export class BackendSpeechSource implements SpeechSource {
         socket.send(
           JSON.stringify({
             type: 'start',
+            ...(session.holdStreaming ? { holdStreaming: true } : {}),
             audioProtocolVersion: 1,
             streamId: id,
             sessionEpoch: session.sessionEpoch,

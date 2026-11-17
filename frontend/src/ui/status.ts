@@ -30,3 +30,25 @@ export function generationLabel(state: SessionSnapshot, stream: StreamSnapshot) 
   if (state.generation === 'queued') return `Queued (${state.queued.length})`;
   return 'Ready';
 }
+
+export function diagramProgress(state: SessionSnapshot, stream: StreamSnapshot) {
+  if (state.inFlight || stream.phase === 'receiving' || stream.phase === 'draining')
+    return { label: 'Updating diagram', animated: true };
+  if (state.generation === 'error' || state.capture === 'error')
+    return { label: 'Updates need attention', animated: false };
+  if (state.queued.length) {
+    if (state.generation === 'paused') return { label: 'Updates paused', animated: false };
+    const rateLimited = state.lastResult?.diagnostics.some(
+      (entry) => entry.code === 'rate_limited',
+    );
+    return {
+      label: rateLimited ? 'Waiting for API capacity' : 'Waiting to generate',
+      animated: true,
+    };
+  }
+  if (state.transcribingAudio || state.capture === 'finishing')
+    return { label: 'Processing speech', animated: true };
+  if (state.holdActive || state.capture === 'recording' || state.capture === 'requesting')
+    return { label: 'Listening for more detail', animated: true };
+  return null;
+}

@@ -258,3 +258,36 @@ test('hold-streaming is selectable and uses the hold control', async ({ page }) 
   await page.getByRole('combobox', { name: 'Input mode' }).selectOption('backend');
   await expect(hold).toHaveAttribute('title', /release to draw/);
 });
+
+test('draft indicator stays compact, respects reduced motion and allows canvas interaction', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const indicator = page.locator('.diagram-progress');
+  await expect(indicator).toHaveCount(0);
+  await page.getByRole('button', { name: 'Start demo', exact: true }).click();
+  await expect(indicator).toBeVisible();
+  await expect(indicator).toContainText('Draft');
+  await expect(indicator).toHaveCSS('pointer-events', 'none');
+  await expect(page.locator('.diagram-progress-spinner')).toHaveCSS(
+    'animation-name',
+    'diagram-progress-spin',
+  );
+  const canvasBox = (await page.locator('.board-region').boundingBox())!;
+  const badgeBox = (await indicator.boundingBox())!;
+  expect(badgeBox.height).toBeLessThan(80);
+  expect(badgeBox.width).toBeLessThan(canvasBox.width);
+  await expect(page.locator('.board-region')).toHaveCSS('filter', 'none');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.locator('.diagram-progress-spinner')).toHaveCSS('animation-name', 'none');
+  await page.getByRole('button', { name: 'Stop session', exact: true }).click();
+  if (await indicator.count()) {
+    await expect(indicator).toContainText('Updates paused');
+    await expect(page.locator('.diagram-progress-spinner')).toHaveAttribute('data-animated', 'false');
+  }
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.getByRole('button', { name: 'Reset session', exact: true }).click();
+  await expect(indicator).toHaveCount(0);
+});

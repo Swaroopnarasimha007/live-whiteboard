@@ -28,7 +28,7 @@ import { ToolRail } from './ToolRail';
 import { PanelSections } from './PanelSections';
 import { TranscriptPanel } from './TranscriptPanel';
 import { HoldToTalk } from './HoldToTalk';
-import { captureLabel, generationLabel } from './status';
+import { captureLabel, diagramProgress, generationLabel } from './status';
 
 const wideQuery = '(min-width: 1100px)';
 const subscribeWidth = (listener: () => void) => {
@@ -100,6 +100,7 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
   };
   const captureActive = ['recording', 'requesting', 'finishing'].includes(session.capture);
   const streaming = stream.phase === 'receiving' || stream.phase === 'draining';
+  const progress = diagramProgress(session, stream);
   const sections = Object.values(scene.sections).sort((a, b) => a.order - b.order);
   const active =
     editor.activeSectionId && scene.sections[editor.activeSectionId]
@@ -341,6 +342,16 @@ export function WhiteboardApp({ runtime }: { runtime: RendererRuntime }) {
                   </div>
                   <small>No microphone or API key needed for the demo.</small>
                 </div>
+              </div>
+            )}
+            {progress && (
+              <div className="diagram-progress" role="status" aria-live="polite" aria-atomic="true">
+                <span
+                  className="diagram-progress-spinner"
+                  data-animated={progress.animated}
+                  aria-hidden="true"
+                />
+                <span>Draft · {progress.label}</span>
               </div>
             )}
             {(attention || editor.message) && (

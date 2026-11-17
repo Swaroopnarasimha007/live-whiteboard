@@ -1247,3 +1247,45 @@ p {
 .panel-section-body [hidden] {
   display: none;
 }
+
+/* A passive canvas status leaves drawing and navigation available underneath. */
+.diagram-progress {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  border: 1px solid var(--ui-border);
+  border-radius: 999px;
+  background: var(--ui-canvas);
+  color: var(--ui-text);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+.diagram-progress-spinner {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--ui-border);
+  border-top-color: var(--ui-accent);
+  border-radius: 50%;
+}
+.diagram-progress-spinner[data-animated='true'] {
+  animation: diagram-progress-spin 1s linear infinite;
+}
+@keyframes diagram-progress-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .diagram-progress-spinner[data-animated='true'] {
+    animation: none;
+  }
+}

@@ -520,6 +520,12 @@
           "default": false,
           "title": "Retryable",
           "type": "boolean"
+        },
+        "retryAfter": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Retryafter",
+          "type": "number"
         }
       },
       "required": [

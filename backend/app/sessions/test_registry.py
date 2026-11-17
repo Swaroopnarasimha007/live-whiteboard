@@ -233,3 +233,29 @@ def test_repeated_cancel_does_not_interrupt_provider_cleanup(action):
         await cleanup(sessions, speech, diagram)
 
     asyncio.run(run())
+
+
+def test_rate_limit_retry_delay_reaches_wire_event():
+    from app.diagram import FailedResult
+
+    async def run():
+        sessions, session, service, speech, diagram = await setup()
+
+        async def limited(prepared, state):
+            yield FailedResult("rate_limited", "Wait for provider capacity.", True, 42)
+
+        service.generate = limited
+        try:
+            body = GenerationRequest.model_validate_json(
+                json.dumps(generation(session.public().model_dump()))
+            )
+            _, record = await sessions.admit(body)
+            subscription = await sessions.subscribe(session, record)
+            events = [json.loads(line) async for line in subscription.events()]
+            assert events[-1]["event"] == "failed"
+            assert events[-1]["code"] == "rate_limited"
+            assert events[-1]["retryAfter"] == 42
+        finally:
+            await cleanup(sessions, speech, diagram)
+
+    asyncio.run(run())

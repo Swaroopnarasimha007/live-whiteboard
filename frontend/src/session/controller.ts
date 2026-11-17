@@ -140,6 +140,9 @@ export function createSessionController(options: SessionOptions) {
   let failed: Batch | null = null;
   const deferred = new Map<string, { event: SpeechEvent; attempts: number; since: number }>();
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let cooldownTimer: ReturnType<typeof setTimeout> | undefined;
+  let cooldownUntil = 0;
+  let rateLimitAttempts = 0;
   let ready = false;
   let paused = false;
   let stopped = false;
@@ -198,6 +201,10 @@ export function createSessionController(options: SessionOptions) {
     if (timer !== undefined) clearTimeout(timer);
     timer = undefined;
   };
+  const clearCooldownTimer = () => {
+    if (cooldownTimer !== undefined) clearTimeout(cooldownTimer);
+    cooldownTimer = undefined;
+  };
   const mark = (events: readonly SpeechEvent[], status: TranscriptEntry['status']) => {
     const ids = new Set(events.map((e) => e.id));
     return state.transcript.map((e) => (ids.has(e.id) ? { ...e, status } : e));
@@ -222,6 +229,33 @@ export function createSessionController(options: SessionOptions) {
         if (disposed || batch.version !== version || active !== batch) return;
         active = null;
         const incomplete = result.phase !== 'completed';
+        const rateLimit = result.diagnostics.find((entry) => entry.code === 'rate_limited');
+        if (incomplete && isBackendMode(state.mode) && rateLimit) {
+          rateLimitAttempts++;
+          const fallbackMs = Math.min(120000, 10000 * 2 ** Math.min(rateLimitAttempts - 1, 4));
+          const delayMs = Math.max(1000, (rateLimit.retryAfter ?? fallbackMs / 1000) * 1000);
+          cooldownUntil = now() + delayMs;
+          // Keep throttled text in the retained intake queue, outside the bounded
+          // best-effort deferred history. Rebuild context when the cooldown ends.
+          const ids = new Set(batch.events.map((event) => event.id));
+          queue = [
+            ...batch.events.map((event) => ({ event, enqueuedAt: batch.started })),
+            ...queue.filter((item) => !ids.has(item.event.id)),
+          ];
+          for (const id of ids) deferred.delete(id);
+          ready = true;
+          publish({
+            lastResult: result,
+            modelLatencyMs: Math.max(0, now() - batch.started),
+            transcript: mark(batch.events, 'queued'),
+            generation: paused || stopped ? 'paused' : 'queued',
+            message:
+              'Provider rate limit reached. Speech is queued and will retry after the cooldown.',
+          });
+          pump();
+          return;
+        }
+        if (!incomplete) rateLimitAttempts = 0;
         const nonblocking = isBackendMode(state.mode) && result.phase !== 'cancelled';
         if (incomplete && !nonblocking) failed = batch;
         if (nonblocking) {
@@ -282,6 +316,23 @@ export function createSessionController(options: SessionOptions) {
       (!force && (paused || stopped || !ready))
     )
       return;
+    if (cooldownUntil > now()) {
+      if (cooldownTimer === undefined) {
+        cooldownTimer = setTimeout(
+          () => {
+            cooldownTimer = undefined;
+            ready = true;
+            pump();
+          },
+          Math.min(cooldownUntil - now(), 2147483647),
+        );
+      }
+      publish({
+        generation: 'queued',
+        message: 'Provider rate limit reached. Speech is queued and will retry after the cooldown.',
+      });
+      return;
+    }
     if (options.consumer.isActive()) return;
     if (isBackendMode(state.mode)) {
       const backend = options.backend?.getSnapshot();
@@ -307,7 +358,18 @@ export function createSessionController(options: SessionOptions) {
     }
     let request: GenerationRequest;
     try {
-      const events = continuation?.events ?? queue.map((item) => item.event);
+      const events = continuation ? [...continuation.events] : [];
+      if (!continuation) {
+        for (const { event } of queue) {
+          const next = [...events, event];
+          const chars = next.map((entry) => entry.text).join(' ').length;
+          const duration =
+            Math.max(...next.map((entry) => entry.endMs)) -
+            Math.min(...next.map((entry) => entry.startMs));
+          if (events.length && (chars > maxChars || duration > maxDuration)) break;
+          events.push(event);
+        }
+      }
       if (!continuation && isBackendMode(state.mode)) {
         for (const [id, item] of deferred) {
           if (item.attempts >= deferredAttempts || now() - item.since > deferredAge) {
@@ -358,7 +420,7 @@ export function createSessionController(options: SessionOptions) {
     }
     const ids = new Set(request.transcript.segmentIds);
     const events = [...state.transcript].filter((event) => ids.has(event.id));
-    if (!continuation) queue = [];
+    if (!continuation) queue = queue.filter((item) => !ids.has(item.event.id));
     ready = false;
     clearTimer();
     run({ request, events, started: now(), version }, false);
@@ -542,6 +604,7 @@ export function createSessionController(options: SessionOptions) {
     paused = true;
     captureToken++;
     clearTimer();
+    clearCooldownTimer();
     speech.pause();
     backendSpeech?.pause();
     if (microphone.getSnapshot().state === 'requesting') microphone.stop();
@@ -560,6 +623,7 @@ export function createSessionController(options: SessionOptions) {
     paused = true;
     captureToken++;
     clearTimer();
+    clearCooldownTimer();
     speech.stop();
     backendSpeech?.stop();
     microphone.stop();
@@ -580,6 +644,9 @@ export function createSessionController(options: SessionOptions) {
     version++;
     captureToken++;
     clearTimer();
+    clearCooldownTimer();
+    cooldownUntil = 0;
+    rateLimitAttempts = 0;
     speech.stop();
     speech.reset?.();
     backendSpeech?.stop();

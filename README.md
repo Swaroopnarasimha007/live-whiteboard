@@ -12,6 +12,12 @@ Change `transcription.endpointing.hold_streaming_pause_ms` in
 `backend/config/settings.advanced.yaml` to adjust the pause (`2000` = two seconds),
 then restart the backend.
 
+If the diagram provider rate-limits a request, speech stays queued during a cooldown.
+The app honors the provider's retry delay. When none is supplied, it waits 10 seconds,
+then increases the wait on repeated failures up to two minutes. After the cooldown,
+queued speech is sent with fresh board context. Stop pauses automatic retries;
+Reset clears the queue.
+
 **Defaults:** Groq `openai/gpt-oss-120b` for diagrams and local **Whisper Small** for speech.
 
 Skip to the section you’re interested in:

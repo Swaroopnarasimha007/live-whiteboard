@@ -21,12 +21,14 @@ export type StreamCode =
   | 'INTERACTION_ACTIVE'
   | 'BUSY'
   | 'SCHEDULER'
+  | 'rate_limited'
   | ErrorCode;
 export interface StreamDiagnostic {
   code: StreamCode;
   message: string;
   line?: number;
   sequence?: number;
+  retryAfter?: number;
 }
 export interface StreamStats {
   bytes: number;

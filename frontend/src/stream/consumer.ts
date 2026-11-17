@@ -330,6 +330,7 @@ export function createStreamConsumer(options: StreamConsumerOptions) {
             code: event.code as StreamDiagnostic['code'],
             message: event.message,
             sequence: event.sequence,
+            ...(event.retryAfter ? { retryAfter: event.retryAfter } : {}),
           });
         } else if (event.event === 'cancelled') cancel(event.reason);
       }

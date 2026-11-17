@@ -176,6 +176,7 @@ class Failed(EventBase):
     code: str
     message: str
     retryable: bool = False
+    retryAfter: float = Field(default=0, ge=0, allow_inf_nan=False)
 
 
 class Cancelled(EventBase):

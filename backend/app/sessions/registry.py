@@ -445,6 +445,7 @@ class SessionRegistry:
                             code=result.code[:64],
                             message=result.message[:500],
                             retryable=result.retryable,
+                            retryAfter=result.retry_after or 0,
                         )
                     else:
                         raise TypeError("Unknown generation result")

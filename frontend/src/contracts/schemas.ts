@@ -423,6 +423,7 @@ export const generationEventSchema = safe(
       code: z.string(),
       message: z.string(),
       retryable: z.boolean().default(false),
+      retryAfter: z.number().finite().nonnegative().optional(),
     }),
     z.strictObject({ ...eventBase, event: z.literal('cancelled'), reason: z.string() }),
   ]),

@@ -31,6 +31,7 @@ const cleanups: (() => void)[] = [];
 afterEach(() => {
   cleanups.splice(0).forEach((fn) => fn());
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 describe('backend session bridge', () => {
   it.each(['stale', 'expired', 'epoch', 'profile'] as const)(
@@ -481,4 +482,99 @@ describe('backend session bridge', () => {
     expect(Object.keys(runtime.store.getSnapshot().nodes)).toHaveLength(1);
     expect(runtime.session.getSnapshot().holdActive).toBe(false);
   });
+  it.each([
+    { retryAfter: 40, action: 'retry' },
+    { retryAfter: undefined, action: 'retry' },
+    { retryAfter: undefined, action: 'repeat' },
+    { retryAfter: undefined, action: 'stop' },
+    { retryAfter: undefined, action: 'reset' },
+  ])(
+    'queues speech through rate limiting ($action, $retryAfter)',
+    async ({ retryAfter, action }) => {
+      vi.useFakeTimers({
+        toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'performance'],
+      });
+      const requests: GenerationRequest[] = [];
+      const fetcher = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+        if (String(url).endsWith('/capabilities')) return json(caps);
+        if (!String(url).endsWith('/generations')) return json(identity());
+        const request = JSON.parse(String(init?.body)) as GenerationRequest;
+        requests.push(request);
+        const base = {
+          wireVersion: 1,
+          requestId: request.requestId,
+          sessionEpoch: request.sessionEpoch,
+        };
+        const terminal =
+          requests.length === 1 || (action === 'repeat' && requests.length === 2)
+            ? {
+                ...base,
+                event: 'failed',
+                sequence: 2,
+                code: 'rate_limited',
+                message: 'Slow down',
+                retryable: true,
+                ...(retryAfter ? { retryAfter } : {}),
+              }
+            : { ...base, event: 'completed', sequence: 2, operationCount: 0, warningCount: 0 };
+        return new Response(
+          [{ ...base, event: 'started', sequence: 1, baseRevision: request.baseRevision }, terminal]
+            .map((e) => JSON.stringify(e))
+            .join('\n'),
+          { headers: { 'Content-Type': 'application/x-ndjson' } },
+        );
+      });
+      const runtime = createRendererRuntime({ backend: { fetcher } });
+      cleanups.push(() => runtime.dispose());
+      vi.spyOn(runtime.backend.source, 'start').mockImplementation((_emit, state) =>
+        state?.('recording'),
+      );
+      vi.spyOn(runtime.backend.source, 'stop').mockImplementation(() => {});
+      await runtime.session.start('hold-streaming');
+      runtime.session.ingest({
+        id: 'first',
+        text: 'First sentence',
+        isFinal: true,
+        startMs: 0,
+        endMs: 1000,
+      });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(requests).toHaveLength(1);
+      expect(runtime.session.getSnapshot().queued.map((e) => e.id)).toEqual(['first']);
+      runtime.session.ingest({
+        id: 'second',
+        text: 'More detail',
+        isFinal: true,
+        startMs: 1000,
+        endMs: 2000,
+      });
+      if (action === 'stop') runtime.session.stop();
+      else if (action === 'reset') runtime.session.reset({ confirmed: true });
+      else runtime.session.sendNow();
+      const waitMs = (retryAfter ?? 10) * 1000;
+      await vi.advanceTimersByTimeAsync(waitMs - 101);
+      expect(requests).toHaveLength(1);
+      await vi.advanceTimersByTimeAsync(101);
+      if (action === 'stop' || action === 'reset') {
+        expect(requests).toHaveLength(1);
+        expect(runtime.session.getSnapshot().queued).toHaveLength(action === 'stop' ? 2 : 0);
+        return;
+      }
+      expect(requests).toHaveLength(2);
+      expect(requests[1]!.transcript.segmentIds).toEqual(['first', 'second']);
+      expect(requests[1]!.requestId).not.toBe(requests[0]!.requestId);
+      if (action === 'repeat') {
+        expect(runtime.session.getSnapshot().queued).toHaveLength(2);
+        await vi.advanceTimersByTimeAsync(19800);
+        expect(requests).toHaveLength(2);
+        await vi.advanceTimersByTimeAsync(200);
+        expect(requests).toHaveLength(3);
+        expect(requests[2]!.transcript.segmentIds).toEqual(['first', 'second']);
+      }
+      expect(runtime.session.getSnapshot().queued).toHaveLength(0);
+      expect(runtime.session.getSnapshot().transcript.every((e) => e.status === 'completed')).toBe(
+        true,
+      );
+    },
+  );
 });
